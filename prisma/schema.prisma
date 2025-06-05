@@ -1,0 +1,65 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String @id @default(cuid())
+  email     String @unique
+  password  String
+  name      String
+  role      Role @default(MEMBER)
+  teams     Team[] @relation("TeamMembers")
+  messages  Message[]
+  tasks     Task[]
+}
+
+model Team {
+  id       String @id @default(cuid())
+  name     String
+  members User[] @relation("TeamMembers")
+  boards   Board[]
+}
+
+model Board {
+  id     String @id @default(cuid())
+  title  String
+  team   Team? @relation(fields: [teamId], references: [id])
+  teamId String?
+  tasks  Task[]
+}
+
+model Task {
+  id         String @id @default(cuid())
+  title      String
+  content    String?
+  status     String @default("todo")
+  assigned   User? @relation(fields: [assignedId], references: [id])
+  assignedId String?
+  board      Board? @relation(fields: [boardId], references: [id])
+  boardId    String?
+}
+
+model Message {
+  id       String @id @default(cuid())
+  content  String
+  user     User @relation(fields: [userId], references: [id])
+  userId   String
+  createdAt DateTime @default(now())
+}
+
+enum Role {
+  ADMIN
+  MEMBER
+}

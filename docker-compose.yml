@@ -6,13 +6,15 @@ services:
     container_name: team-collab-app
     ports:
       - '3000:3000'
+      - '5555:5555'
     volumes:
       - .:/app
       - /app/node_modules
     depends_on:
       - db
     environment:
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/team_collab
+      - DATABASE_URL=${DATABASE_URL}
+    command: sh -c "npx prisma migrate dev --name init && node index.js"
 
   db:
     image: postgres:15
