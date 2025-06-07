@@ -1,9 +1,17 @@
 // index.js
+require('dotenv').config();
 
 const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.get('/', (req, res) => res.send('Team Collaboration API'));
+const authRoutes = require('./src/routes/auth.routes');
+app.use(express.json());
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.get('/', (req, res) => res.send('Team Collaboration APIII'));
+
+app.use('/api/auth', authRoutes);
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
