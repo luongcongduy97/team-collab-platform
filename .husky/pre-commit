@@ -1,4 +1,11 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-npx eslint . && npx prettier --check .
+# Lint backend
+npx eslint . --ext .js --ignore-path .gitignore
+
+# Lint frontend
+cd client && npx eslint src --ext .js,.jsx --ignore-path .gitignore && cd ..
+
+# Prettier check
+npx prettier --check .
