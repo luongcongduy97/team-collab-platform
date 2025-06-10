@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
+import './AuthForm.css';
 
 function Register() {
   const [form, setForm] = useState({ email: '', password: '', name: '' });
@@ -18,9 +19,9 @@ function Register() {
     }
   };
   return (
-    <div>
-      <h2>Register</h2>
-      <form onSubmit={handleSubmit}>
+    <div className="auth-container">
+      <form className="auth-form" onSubmit={handleSubmit}>
+        <h2>Register</h2>
         <input name="name" placeholder="Name" onChange={handleChange} required />
         <input name="email" placeholder="Email" onChange={handleChange} required />
         <input
