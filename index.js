@@ -9,11 +9,14 @@ const cors = require('cors');
 app.use(cors());
 
 const authRoutes = require('./src/routes/auth.routes');
+const teamRoutes = require('./src/routes/team.routes');
+
 app.use(express.json());
 
 app.get('/', (req, res) => res.send('Team Collaboration APIII'));
 
 app.use('/api/auth', authRoutes);
+app.use('/api/teams', teamRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
