@@ -3,8 +3,9 @@ import api from '../api/api';
 
 function TeamPage() {
   const [teams, setTeams] = useState([]);
-  // const [newTeam, setNewTeam] = useState('');
-  // const [message, setMessage] = useState('');
+  const [newTeam, setNewTeam] = useState('');
+  const [message, setMessage] = useState('');
+  // const [inviteInputs, setInviteInputs] = useState({});
 
   useEffect(() => {
     api
@@ -13,9 +14,46 @@ function TeamPage() {
       .catch((err) => console.error(err));
   }, []);
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await api.post('/teams', { name: newTeam });
+      setTeams((prev) => [...prev, res.data]);
+      setMessage('Team created successfully!');
+      setNewTeam('');
+    } catch (err) {
+      const apiError = err.response?.data?.error;
+      setMessage(apiError || err.message || 'Error creating team');
+    }
+  };
+
+  // const handleInviteInputChange = (teamId, value) => {
+  //   setInviteInputs((prev) => ({ ...prev, [teamId]: value}));
+  // };
+
+  // const handleInvite = async (teamId) => {
+  //   const userId = inviteInputs[teamId];
+  //   if (!userId) return;
+
+  //   try {
+  //     await api.post(`/teams/${teamId}/invite`)
+  //   }
+  // }
+
   return (
     <div>
       <h2>Team Management</h2>
+
+      <form onSubmit={handleSubmit} style={{ marginBottom: '1rem' }}>
+        <input
+          value={newTeam}
+          onChange={(e) => setNewTeam(e.target.value)}
+          placeholder="New team name"
+          required
+        />
+        <button type="submit">Create Team</button>
+      </form>
+      <p>{message}</p>
 
       <h3>All Teams</h3>
       <ul>

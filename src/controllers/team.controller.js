@@ -5,6 +5,11 @@ exports.createTeam = async (req, res) => {
     const { name } = req.body;
     const userId = req.user.id;
 
+    const existing = await prisma.team.findFirst({ where: { name } });
+    if (existing) {
+      return res.status(400).json({ error: 'Team name already exists' });
+    }
+
     const team = await prisma.team.create({
       data: {
         name,
