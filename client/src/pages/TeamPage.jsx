@@ -5,7 +5,7 @@ function TeamPage() {
   const [teams, setTeams] = useState([]);
   const [newTeam, setNewTeam] = useState('');
   const [message, setMessage] = useState('');
-  // const [inviteInputs, setInviteInputs] = useState({});
+  const [inviteInputs, setInviteInputs] = useState({});
 
   useEffect(() => {
     api
@@ -27,18 +27,23 @@ function TeamPage() {
     }
   };
 
-  // const handleInviteInputChange = (teamId, value) => {
-  //   setInviteInputs((prev) => ({ ...prev, [teamId]: value}));
-  // };
+  const handleInviteInputChange = (teamId, value) => {
+    setInviteInputs((prev) => ({ ...prev, [teamId]: value }));
+  };
 
-  // const handleInvite = async (teamId) => {
-  //   const userId = inviteInputs[teamId];
-  //   if (!userId) return;
+  const handleInvite = async (teamId) => {
+    const userId = inviteInputs[teamId];
+    if (!userId) return;
 
-  //   try {
-  //     await api.post(`/teams/${teamId}/invite`)
-  //   }
-  // }
+    try {
+      await api.post(`/teams/${teamId}/invite`, { userId });
+      setMessage('User invited successfully');
+      setInviteInputs((prev) => ({ ...prev, [teamId]: '' }));
+    } catch (err) {
+      const apiError = err.response?.data?.error;
+      setMessage(apiError || err.message || 'Error inviting user');
+    }
+  };
 
   return (
     <div>
@@ -58,7 +63,16 @@ function TeamPage() {
       <h3>All Teams</h3>
       <ul>
         {teams.map((team) => (
-          <li key={team.id}>{team.name}</li>
+          <li key={team.id} style={{ marginBottom: '0.5rem' }}>
+            {team.name}
+            <input
+              style={{ marginLeft: '0.5rem' }}
+              placeholder="User ID"
+              value={inviteInputs[team.id] || ''}
+              onChange={(e) => handleInviteInputChange(team.id, e.target.value)}
+            />
+            <button onClick={() => handleInvite(team.id)}>Invite</button>
+          </li>
         ))}
       </ul>
     </div>
