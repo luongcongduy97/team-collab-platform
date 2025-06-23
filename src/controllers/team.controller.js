@@ -52,6 +52,35 @@ exports.inviteUser = async (req, res) => {
   }
 };
 
+exports.inviteByEmail = async (req, res) => {
+  try {
+    const { teamId } = req.params;
+    const { email } = req.body;
+
+    const user = await prisma.user.findUnique({ where: { email }});
+    if (!user) {
+      return res.status(404).json({ error: 'User not found'})
+    }
+
+    const updatedTeam = await prisma.team.update({
+      where: { id: teamId },
+      data: {
+        members: {
+          connect: { id: user.id },
+        },
+      },
+      include: {
+        members: true,
+      }
+    });
+
+    res.json(updatedTeam);
+  } catch (err) {
+    console.error('[INVITE_BY_EMAIL]', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+}
+
 exports.getMyTeam = async (req, res) => {
   try {
     const userId = req.user.id;

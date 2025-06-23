@@ -32,11 +32,11 @@ function TeamPage() {
   };
 
   const handleInvite = async (teamId) => {
-    const userId = inviteInputs[teamId];
-    if (!userId) return;
+    const email = inviteInputs[teamId];
+    if (!email) return;
 
     try {
-      await api.post(`/teams/${teamId}/invite`, { userId });
+      await api.post(`/teams/${teamId}/invite-by-email`, { email });
       setMessage('User invited successfully');
       setInviteInputs((prev) => ({ ...prev, [teamId]: '' }));
     } catch (err) {
@@ -67,7 +67,7 @@ function TeamPage() {
             {team.name}
             <input
               style={{ marginLeft: '0.5rem' }}
-              placeholder="User ID"
+              placeholder="Email"
               value={inviteInputs[team.id] || ''}
               onChange={(e) => handleInviteInputChange(team.id, e.target.value)}
             />
