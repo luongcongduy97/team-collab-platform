@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Register from './pages/Register';
 import Login from './pages/Login';
 import TeamPage from './pages/TeamPage';
+import BoardPage from './pages/BoardPage';
 
 import './App.css';
 
@@ -17,6 +18,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/teams" element={<TeamPage />} />
+          <Route path="/teams/:teamId/boards" element={<BoardPage />} />
         </Routes>
       </div>
     </Router>

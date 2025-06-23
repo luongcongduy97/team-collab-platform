@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import api from '../api/api';
 
 function TeamPage() {
@@ -65,6 +66,9 @@ function TeamPage() {
         {teams.map((team) => (
           <li key={team.id} style={{ marginBottom: '0.5rem' }}>
             {team.name}
+            <Link to={`/teams/${team.id}/boards`} style={{ marginLeft: '0.5rem' }}>
+              Boards
+            </Link>
             <input
               style={{ marginLeft: '0.5rem' }}
               placeholder="Email"
