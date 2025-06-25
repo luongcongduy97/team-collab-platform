@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { useState } from 'react';
 import Register from './pages/Register';
 import Login from './pages/Login';
 import TeamPage from './pages/TeamPage';
@@ -7,22 +8,29 @@ import BoardPage from './pages/BoardPage';
 import './App.css';
 
 function App() {
+  const [, forceUpdate] = useState(0);
+  const isLoggedIn = !!localStorage.getItem('token');
   const handleLogout = () => {
     localStorage.removeItem('token');
+    forceUpdate((i) => i + 1);
     window.location.href = '/login';
   };
 
-  const isLoggedIn = Boolean(localStorage.getItem('token'));
   return (
     <Router>
       <div className="App">
         <h1>Team Collaboration</h1>
         <nav>
-          <Link to="/register">Register</Link> | <Link to="/login">Login</Link>
-          {isLoggedIn && (
+          <Link to="/register">Register</Link>
+          {isLoggedIn ? (
             <>
               {' | '}
               <button onClick={handleLogout}>Logout</button>
+            </>
+          ) : (
+            <>
+              {' | '}
+              <Link to="/login">Login</Link>
             </>
           )}
         </nav>
