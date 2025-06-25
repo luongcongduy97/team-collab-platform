@@ -1,10 +1,12 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './AuthForm.css';
 
 function Login() {
   const [form, setForm] = useState({ email: '', password: '' });
   const [message, setMessage] = useState('');
+  const navigate = useNavigate();
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -14,6 +16,7 @@ function Login() {
       const res = await axios.post('http://localhost:3000/api/auth/login', form);
       localStorage.setItem('token', res.data.token);
       setMessage('✅ Login success!');
+      navigate('/teams');
     } catch (err) {
       setMessage('❌ ' + err.response?.data?.error || 'Error');
     }
