@@ -7,12 +7,24 @@ import BoardPage from './pages/BoardPage';
 import './App.css';
 
 function App() {
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    window.location.href = '/login';
+  };
+
+  const isLoggedIn = Boolean(localStorage.getItem('token'));
   return (
     <Router>
       <div className="App">
         <h1>Team Collaboration</h1>
         <nav>
           <Link to="/register">Register</Link> | <Link to="/login">Login</Link>
+          {isLoggedIn && (
+            <>
+              {' | '}
+              <button onClick={handleLogout}>Logout</button>
+            </>
+          )}
         </nav>
         <Routes>
           <Route path="/register" element={<Register />} />
