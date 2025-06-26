@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import api from '../api/api';
+import './Main.css';
 
 function BoardPage() {
   const { teamId } = useParams();
@@ -29,9 +30,9 @@ function BoardPage() {
   };
 
   return (
-    <div>
+    <div className="page-container">
       <h2>Boards</h2>
-      <form onSubmit={handleSubmit} style={{ marginBottom: '1rem' }}>
+      <form className="form-inline" onSubmit={handleSubmit}>
         <input
           value={newTitle}
           onChange={(e) => setNewTitle(e.target.value)}
@@ -41,7 +42,7 @@ function BoardPage() {
         <button type="submit">Create Board</button>
       </form>
       <p>{message}</p>
-      <ul>
+      <ul className="card-list">
         {boards.map((board) => (
           <li key={board.id}>{board.title}</li>
         ))}

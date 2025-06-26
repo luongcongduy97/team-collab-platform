@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../api/api';
+import './Main.css';
 
 function TeamPage() {
   const [teams, setTeams] = useState([]);
@@ -47,10 +48,10 @@ function TeamPage() {
   };
 
   return (
-    <div>
+    <div className="page-container">
       <h2>Team Management</h2>
 
-      <form onSubmit={handleSubmit} style={{ marginBottom: '1rem' }}>
+      <form className="form-inline" onSubmit={handleSubmit}>
         <input
           value={newTeam}
           onChange={(e) => setNewTeam(e.target.value)}
@@ -62,15 +63,12 @@ function TeamPage() {
       <p>{message}</p>
 
       <h3>All Teams</h3>
-      <ul>
+      <ul className="card-list">
         {teams.map((team) => (
-          <li key={team.id} style={{ marginBottom: '0.5rem' }}>
-            {team.name}
-            <Link to={`/teams/${team.id}/boards`} style={{ marginLeft: '0.5rem' }}>
-              Boards
-            </Link>
+          <li key={team.id}>
+            <span>{team.name}</span>
+            <Link to={`/teams/${team.id}/boards`}>Boards</Link>
             <input
-              style={{ marginLeft: '0.5rem' }}
               placeholder="Email"
               value={inviteInputs[team.id] || ''}
               onChange={(e) => handleInviteInputChange(team.id, e.target.value)}
