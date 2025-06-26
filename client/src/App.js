@@ -8,11 +8,10 @@ import BoardPage from './pages/BoardPage';
 import './App.css';
 
 function App() {
-  const [, forceUpdate] = useState(0);
-  const isLoggedIn = !!localStorage.getItem('token');
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
   const handleLogout = () => {
     localStorage.removeItem('token');
-    forceUpdate((i) => i + 1);
+    setIsLoggedIn(false);
     window.location.href = '/login';
   };
 
@@ -36,7 +35,7 @@ function App() {
         </nav>
         <Routes>
           <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
           <Route path="/teams" element={<TeamPage />} />
           <Route path="/teams/:teamId/boards" element={<BoardPage />} />
         </Routes>

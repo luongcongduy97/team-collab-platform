@@ -1,9 +1,10 @@
 import { useState } from 'react';
+import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './AuthForm.css';
 
-function Login() {
+function Login({ setIsLoggedIn }) {
   const [form, setForm] = useState({ email: '', password: '' });
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
@@ -15,6 +16,7 @@ function Login() {
     try {
       const res = await axios.post('http://localhost:3000/api/auth/login', form);
       localStorage.setItem('token', res.data.token);
+      if (setIsLoggedIn) setIsLoggedIn(true);
       setMessage('✅ Login success!');
       navigate('/teams');
     } catch (err) {
@@ -41,5 +43,9 @@ function Login() {
     </div>
   );
 }
+
+Login.propTypes = {
+  setIsLoggedIn: PropTypes.func,
+};
 
 export default Login;
