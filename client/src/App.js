@@ -18,21 +18,17 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <h1>Team Collaboration</h1>
-        <nav>
-          <Link to="/register">Register</Link>
-          {isLoggedIn ? (
-            <>
-              {' | '}
+        <header className="app-header">
+          <h1>Team Collaboration</h1>
+          <nav>
+            <Link to="/register">Register</Link>
+            {isLoggedIn ? (
               <button onClick={handleLogout}>Logout</button>
-            </>
-          ) : (
-            <>
-              {' | '}
+            ) : (
               <Link to="/login">Login</Link>
-            </>
-          )}
-        </nav>
+            )}
+          </nav>
+        </header>
         <Routes>
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
