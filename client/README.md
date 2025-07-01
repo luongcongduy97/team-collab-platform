@@ -1,70 +1,77 @@
-# Getting Started with Create React App
+# Team Collaboration Platform
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This repository contains a simple full‑stack application that demonstrates a small team collaboration tool. The project includes a Node.js/Express API with a React front‑end and uses PostgreSQL via Prisma ORM.
 
-## Available Scripts
+## Technology Stack
 
-In the project directory, you can run:
+- **Node.js 18** with **Express** – REST API server
+- **Prisma** ORM with **PostgreSQL** database
+- **React** (Create React App) for the front‑end
+- **Docker** & **Docker Compose** for local development
+- **ESLint**, **Prettier** and **Husky** for code quality
 
-### `npm start`
+## Features
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- User registration and login using JWT authentication
+- Manage teams: create teams, invite members by user ID or email, list your teams
+- Boards inside teams: create boards and list boards for a team
+- Tasks inside boards: create, update and delete tasks, assign members and change task status (todo / in‑progress / done)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Getting Started
 
-### `npm test`
+### Prerequisites
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- [Node.js](https://nodejs.org/) and npm
+- [PostgreSQL](https://www.postgresql.org/) (unless using Docker)
+- Optional: [Docker](https://www.docker.com/) and Docker Compose
 
-### `npm run build`
+### Installation
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+1. Install backend dependencies:
+   ```bash
+   npm install
+   ```
+2. Install front‑end dependencies:
+   ```bash
+   cd client && npm install
+   cd ..
+   ```
+3. Create a `.env` file in the project root and define the following variables:
+   ```bash
+   DATABASE_URL=postgresql://<user>:<password>@localhost:5432/<db_name>
+   JWT_SECRET=your_jwt_secret
+   ```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Running with Docker
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+If Docker is available you can start both the API and PostgreSQL database with one command:
 
-### `npm run eject`
+```bash
+docker-compose up --build
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Docker Compose will run database migrations automatically and launch the server on port **3000**.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Running locally without Docker
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+1. Ensure PostgreSQL is running and `DATABASE_URL` in your `.env` points to it.
+2. Apply database migrations and generate the Prisma client:
+   ```bash
+   npx prisma migrate dev --name init
+   ```
+3. Start the API server:
+   ```bash
+   node index.js
+   ```
+4. In a separate terminal start the React development server:
+   ```bash
+   cd client && npm start
+   ```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+The React app will be accessible at `http://localhost:3000` (or the port shown by `npm start`).
 
-## Learn More
+## Useful scripts
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- `npm run lint` – run ESLint on the backend
+- `cd client && npm start` – run the React front‑end
+- `docker-compose up` – start the full stack using Docker
