@@ -44,7 +44,9 @@ function BoardPage() {
       <p>{message}</p>
       <ul className="card-list">
         {boards.map((board) => (
-          <li key={board.id}>{board.title}</li>
+          <li key={board.id}>
+            {board.title} - <a href={`/boards/${board.id}/tasks`}>Tasks</a>
+          </li>
         ))}
       </ul>
     </div>

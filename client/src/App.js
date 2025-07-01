@@ -4,7 +4,7 @@ import Register from './pages/Register';
 import Login from './pages/Login';
 import TeamPage from './pages/TeamPage';
 import BoardPage from './pages/BoardPage';
-
+import TaskPage from './pages/TaskPage';
 import './App.css';
 
 function App() {
@@ -34,6 +34,7 @@ function App() {
           <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
           <Route path="/teams" element={<TeamPage />} />
           <Route path="/teams/:teamId/boards" element={<BoardPage />} />
+          <Route path="/boards/:boardId/tasks" element={<TaskPage />} />
         </Routes>
       </div>
     </Router>
