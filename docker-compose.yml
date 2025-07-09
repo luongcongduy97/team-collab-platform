@@ -5,7 +5,6 @@ services:
     build: .
     container_name: team-collab-app
     ports:
-      - '3000:3000'
       - '5555:5555'
     volumes:
       - .:/app
@@ -14,7 +13,23 @@ services:
       - db
     environment:
       - DATABASE_URL=${DATABASE_URL}
+      - PORT=5555
     command: sh -c "npx prisma migrate dev --name init && node index.js"
+
+  client:
+    image: node:18
+    container_name: team-collab-client
+    ports:
+      - '3001:3001'
+    working_dir: /app
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    environment:
+      - PORT=3001
+    command: sh -c "npm install && npm start"
+    depends_on:
+      - app
 
   db:
     image: postgres:15
