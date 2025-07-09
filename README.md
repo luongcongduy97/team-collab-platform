@@ -40,6 +40,8 @@ This repository contains a simple full‑stack application that demonstrates a s
    ```bash
    DATABASE_URL=postgresql://<user>:<password>@localhost:5432/<db_name>
    JWT_SECRET=your_jwt_secret
+   PORT=5555
+   REACT_APP_API_URL=http://localhost:5555/api
    ```
 
 ### Running with Docker
