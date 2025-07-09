@@ -44,13 +44,13 @@ This repository contains a simple full‑stack application that demonstrates a s
 
 ### Running with Docker
 
-If Docker is available you can start both the API and PostgreSQL database with one command:
+If Docker is available you can start the API, React client and PostgreSQL database with one command:
 
 ```bash
 docker-compose up --build
 ```
 
-Docker Compose will run database migrations automatically and launch the server on port **3000**.
+Docker Compose will run database migrations automatically and launch the API on port **5555** and the React app on port **3001**.
 
 ### Running locally without Docker
 
@@ -74,4 +74,4 @@ The React app will be accessible at `http://localhost:3000` (or the port shown b
 
 - `npm run lint` – run ESLint on the backend
 - `cd client && npm start` – run the React front‑end
-- `docker-compose up` – start the full stack using Docker
+- `docker-compose up` – start the API, client and database using Docker
