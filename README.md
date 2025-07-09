@@ -66,8 +66,14 @@ Docker Compose will run database migrations automatically and launch the API on 
    node index.js
    ```
 4. In a separate terminal start the React development server:
+
    ```bash
    cd client && npm start
+   ```
+
+5. (Optional) Seed the database with some example data:
+   ```bash
+   npm run seed
    ```
 
 The React app will be accessible at `http://localhost:3000` (or the port shown by `npm start`).
@@ -77,3 +83,4 @@ The React app will be accessible at `http://localhost:3000` (or the port shown b
 - `npm run lint` – run ESLint on the backend
 - `cd client && npm start` – run the React front‑end
 - `docker-compose up` – start the API, client and database using Docker
+- `npm run seed` – populate the database with sample data
