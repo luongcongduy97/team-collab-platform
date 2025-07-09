@@ -1,18 +1,21 @@
 import { useState } from 'react';
-import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import api from '../api/api';
 import './AuthForm.css';
 
 function Register() {
   const [form, setForm] = useState({ email: '', password: '', name: '' });
   const [message, setMessage] = useState('');
+  const navigate = useNavigate();
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:3000/api/auth/register', form);
+      await api.post('/auth/register', form);
       setMessage('✅ Register success! Now login.');
+      navigate('/teams');
     } catch (err) {
       const apiError = err.response?.data?.error;
       setMessage('❌ ' + (apiError || err.message || 'Unexpected error'));
