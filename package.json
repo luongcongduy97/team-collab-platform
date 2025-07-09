@@ -5,7 +5,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint .",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "seed": "prisma db seed"
   },
   "repository": {
     "type": "git",
@@ -39,5 +40,8 @@
     "husky": "^8.0.0",
     "prettier": "^3.5.3",
     "prisma": "^6.9.0"
+  },
+  "prisma": {
+    "seed": "node prisma/seed.js"
   }
 }
