@@ -2,10 +2,10 @@
 . "$(dirname -- "$0")/_/husky.sh"
 
 # Lint backend
-npx eslint . --ext .js --ignore-path .gitignore
+npx eslint . --ext .js --ignore-path .eslintignore
 
 # Lint frontend
-cd client && npx eslint src --ext .js,.jsx --ignore-path .gitignore && cd ..
+cd client && npx eslint src --ext .js,.jsx && cd ..
 
 # Prettier check
 npx prettier --check .

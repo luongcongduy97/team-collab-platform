@@ -31,7 +31,6 @@ describe('Navbar UI Based on Auth State', () => {
   const password = 'pass123';
 
   before(() => {
-    // Đăng ký trước để có tài khoản
     cy.visit('/register');
     cy.get('input[name="name"]').type('Test User');
     cy.get('input[name="email"]').type(email);
@@ -40,7 +39,7 @@ describe('Navbar UI Based on Auth State', () => {
   });
 
   it('shows Login and Register before login', () => {
-    cy.visit('/'); // trang chủ
+    cy.visit('/');
     cy.contains('Login').should('exist');
     cy.contains('Register').should('exist');
     cy.contains('Logout').should('not.exist');
