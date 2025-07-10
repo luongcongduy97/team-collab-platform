@@ -21,7 +21,7 @@ function App() {
         <header className="app-header">
           <h1>Team Collaboration</h1>
           <nav>
-            <Link to="/register">Register</Link>
+            {!isLoggedIn && <Link to="/register">Register</Link>}
             {isLoggedIn ? (
               <button onClick={handleLogout}>Logout</button>
             ) : (
