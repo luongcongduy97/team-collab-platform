@@ -84,3 +84,4 @@ The React app will be accessible at `http://localhost:3000` (or the port shown b
 - `cd client && npm start` – run the React front‑end
 - `docker-compose up` – start the API, client and database using Docker
 - `npm run seed` – populate the database with sample data
+- `npx cypress open` – run Cypress tests in interactive mode
