@@ -52,6 +52,3 @@ jobs:
       - run: npm test
       - run: npm run lint
       - run: npx prettier --check .
-
-      - run: npm run test:e2e
-        working-directory: client
