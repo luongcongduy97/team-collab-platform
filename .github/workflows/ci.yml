@@ -40,6 +40,9 @@ jobs:
       - run: npx prisma generate
       - run: npx prisma migrate deploy
       - run: npm run seed
+
+      - run: npm install --global wait-on
+
       - run: |
           nohup node index.js > backend.log 2>&1 &
           PORT=$CLIENT_PORT nohup npm start --prefix client > frontend.log 2>&1 &
@@ -47,3 +50,6 @@ jobs:
       - run: npm test
       - run: npm run lint
       - run: npx prettier --check .
+
+      - run: npm run test:e2e
+        working-directory: client
