@@ -2,7 +2,7 @@
 . "$(dirname -- "$0")/_/husky.sh"
 
 # Lint backend
-npx eslint . --ext .js
+npx eslint . --ext .js --ignore-path .eslintignore
 
 # Lint frontend
 cd client && npx eslint src --ext .js,.jsx && cd ..
