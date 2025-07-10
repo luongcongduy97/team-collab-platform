@@ -43,10 +43,13 @@ jobs:
       - run: npx prisma migrate deploy
       - run: npm run seed
 
+      - run: npm install --global wait-on
+
       - run: |
-          npm start --prefix client &
           node index.js &
-          npx wait-on http://localhost:3000 http://localhost:5555
+          wait-on http://localhost:5555
+          npm start --prefix client &
+          wait-on http://localhost:3000
 
       - run: npm test
 
