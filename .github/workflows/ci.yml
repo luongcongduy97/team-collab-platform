@@ -45,8 +45,10 @@ jobs:
 
       - run: |
           nohup node index.js > backend.log 2>&1 &
-          PORT=$CLIENT_PORT nohup npm start --prefix client > frontend.log 2>&1 &
-          npx wait-on http://localhost:$CLIENT_PORT
+          npm run build --prefix client
+          npx serve -s client/build -l $CLIENT_PORT > frontend.log 2>&1 &
+          npx wait-on http://localhost:$CLIENT_PORT --timeout 60000
+
       - run: npm test
       - run: npm run lint
       - run: npx prettier --check .
