@@ -29,20 +29,29 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 18
           cache: 'npm'
+
       - run: npm ci
       - run: npm ci
         working-directory: client
+
       - run: npx prisma generate
       - run: npx prisma migrate deploy
       - run: npm run seed
+
       - run: |
-          nohup node index.js > backend.log 2>&1 &
-          nohup npm start --prefix client > frontend.log 2>&1 &
-          npx wait-on http://localhost:3001
+          npm start --prefix client &
+          node index.js &
+          npx wait-on http://localhost:3000 http://localhost:5555
+
       - run: npm test
+
       - run: npm run lint
       - run: npx prettier --check .
+
+      - run: npm run test:e2e
+        working-directory: client
