@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link as RouterLink } from 'react-router-dom';
+import { Container, Box, TextField, Button, Typography, List, ListItem } from '@mui/material';
 import api from '../api/api';
-import './Main.css';
 
 function BoardPage() {
   const { teamId } = useParams();
@@ -30,26 +30,41 @@ function BoardPage() {
   };
 
   return (
-    <div className="page-container">
-      <h2>Boards</h2>
-      <form className="form-inline" onSubmit={handleSubmit}>
-        <input
+    <Container maxWidth="md" sx={{ mt: 4 }}>
+      <Typography variant="h5" align="center" gutterBottom>
+        Boards
+      </Typography>
+      <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', gap: 1, mb: 2 }}>
+        <TextField
           value={newTitle}
           onChange={(e) => setNewTitle(e.target.value)}
           placeholder="Board Title"
           required
+          fullWidth
         />
-        <button type="submit">Create Board</button>
-      </form>
-      <p>{message}</p>
-      <ul className="card-list">
+        <Button variant="contained" type="submit">
+          Create Board
+        </Button>
+      </Box>
+      {message && (
+        <Typography variant="body2" sx={{ mb: 2 }}>
+          {message}
+        </Typography>
+      )}
+      <List>
         {boards.map((board) => (
-          <li key={board.id}>
-            {board.title} - <a href={`/boards/${board.id}/tasks`}>Tasks</a>
-          </li>
+          <ListItem
+            key={board.id}
+            sx={{ bgcolor: 'background.paper', mb: 1, borderRadius: 1, boxShadow: 1 }}
+          >
+            <Typography sx={{ flexGrow: 1 }}>{board.title}</Typography>
+            <Button component={RouterLink} to={`/boards/${board.id}/tasks`}>
+              Tasks
+            </Button>
+          </ListItem>
         ))}
-      </ul>
-    </div>
+      </List>
+    </Container>
   );
 }
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
+import { Container, Box, TextField, Button, Typography, List, ListItem } from '@mui/material';
 import api from '../api/api';
-import './Main.css';
 
 function TeamPage() {
   const [teams, setTeams] = useState([]);
@@ -48,36 +48,66 @@ function TeamPage() {
   };
 
   return (
-    <div className="page-container">
-      <h2>Team Management</h2>
+    <Container maxWidth="md" sx={{ mt: 4 }}>
+      <Typography variant="h5" align="center" gutterBottom>
+        Team Management
+      </Typography>
 
-      <form className="form-inline" onSubmit={handleSubmit}>
-        <input
+      <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', gap: 1, mb: 2 }}>
+        <TextField
           value={newTeam}
           onChange={(e) => setNewTeam(e.target.value)}
           placeholder="New team name"
           required
+          fullWidth
         />
-        <button type="submit">Create Team</button>
-      </form>
-      <p>{message}</p>
+        <Button variant="contained" type="submit">
+          Create Team
+        </Button>
+      </Box>
+      {message && (
+        <Typography variant="body2" sx={{ mb: 2 }}>
+          {message}
+        </Typography>
+      )}
 
-      <h3>All Teams</h3>
-      <ul className="card-list">
+      <Typography variant="h6" gutterBottom>
+        All Teams
+      </Typography>
+      <List>
         {teams.map((team) => (
-          <li key={team.id}>
-            <span>{team.name}</span>
-            <Link to={`/teams/${team.id}/boards`}>Boards</Link>
-            <input
+          <ListItem
+            key={team.id}
+            sx={{
+              bgcolor: 'background.paper',
+              mb: 1,
+              borderRadius: 1,
+              boxShadow: 1,
+              alignItems: 'center',
+            }}
+          >
+            <Typography sx={{ flexGrow: 1 }}>{team.name}</Typography>
+            <Button component={RouterLink} to={`/teams/${team.id}/boards`} sx={{ mr: 1 }}>
+              Boards
+            </Button>
+            <TextField
               placeholder="Email"
               value={inviteInputs[team.id] || ''}
               onChange={(e) => handleInviteInputChange(team.id, e.target.value)}
+              size="small"
             />
-            <button onClick={() => handleInvite(team.id)}>Invite</button>
-          </li>
+            <Button
+              onClick={() => handleInvite(team.id)}
+              variant="contained"
+              color="secondary"
+              sx={{ ml: 1 }}
+            >
+              Invite
+            </Button>
+          </ListItem>
         ))}
-      </ul>
-    </div>
+      </List>
+    </Container>
   );
 }
 
