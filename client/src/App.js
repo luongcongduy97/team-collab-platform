@@ -12,7 +12,6 @@ import Login from './pages/Login';
 import TeamPage from './pages/TeamPage';
 import BoardPage from './pages/BoardPage';
 import TaskPage from './pages/TaskPage';
-import './App.css';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
