@@ -1,7 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import {
+  Container,
+  Box,
+  TextField,
+  Button,
+  Typography,
+  Select,
+  MenuItem,
+  List,
+  ListItem,
+} from '@mui/material';
 import api from '../api/api';
-import './Main.css';
 
 function TaskPage() {
   const { boardId } = useParams();
@@ -100,99 +110,155 @@ function TaskPage() {
   };
 
   const renderTask = (task) => (
-    <li key={task.id} className="task-item">
+    <ListItem
+      key={task.id}
+      sx={{
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+        bgcolor: 'background.paper',
+        borderRadius: 1,
+        boxShadow: 1,
+        mb: 1,
+      }}
+    >
       {editingTaskId === task.id ? (
         <>
-          <input
+          <TextField
             value={editTitle}
             onChange={(e) => setEditTitle(e.target.value)}
             placeholder="Title"
+            fullWidth
+            size="small"
+            sx={{ mb: 1 }}
           />
-          <input
+          <TextField
             value={editContent}
             onChange={(e) => setEditContent(e.target.value)}
             placeholder="Content"
+            fullWidth
+            size="small"
+            sx={{ mb: 1 }}
           />
-          <select value={editAssignedId} onChange={(e) => setEditAssignedId(e.target.value)}>
-            <option value="">Unassigned</option>
+          <Select
+            value={editAssignedId}
+            onChange={(e) => setEditAssignedId(e.target.value)}
+            fullWidth
+            size="small"
+            sx={{ mb: 1 }}
+          >
+            <MenuItem value="">Unassigned</MenuItem>
             {members.map((m) => (
-              <option key={m.id} value={m.id}>
+              <MenuItem key={m.id} value={m.id}>
                 {m.name}
-              </option>
+              </MenuItem>
             ))}
-          </select>
-          <div className="task-actions">
-            <button type="button" onClick={() => handleUpdate(task.id)}>
+          </Select>
+          <Box sx={{ display: 'flex', gap: 1 }}>
+            <Button
+              type="button"
+              variant="contained"
+              size="small"
+              onClick={() => handleUpdate(task.id)}
+            >
               Save
-            </button>
-            <button type="button" onClick={cancelEdit}>
+            </Button>
+            <Button type="button" size="small" onClick={cancelEdit}>
               Cancel
-            </button>
-          </div>
+            </Button>
+          </Box>
         </>
       ) : (
         <>
-          <span>{task.title}</span>
-          {task.content && <p>{task.content}</p>}
-          {task.assigned && <span> (Assigned: {task.assigned.name})</span>}
-          <div className="task-actions">
-            <select
+          <Typography>{task.title}</Typography>
+          {task.content && <Typography sx={{ mb: 1 }}>{task.content}</Typography>}
+          {task.assigned && (
+            <Typography variant="body2" sx={{ mb: 1 }}>
+              Assigned: {task.assigned.name}
+            </Typography>
+          )}
+          <Box sx={{ display: 'flex', gap: 1 }}>
+            <Select
               value={task.status}
               onChange={(e) => handleStatusChange(task.id, e.target.value)}
+              size="small"
             >
-              <option value="todo">Todo</option>
-              <option value="in-progress">In Progress</option>
-              <option value="done">Done</option>
-            </select>
-            <button type="button" onClick={() => startEdit(task)}>
+              <MenuItem value="todo">Todo</MenuItem>
+              <MenuItem value="in-progress">In Progress</MenuItem>
+              <MenuItem value="done">Done</MenuItem>
+            </Select>
+            <Button type="button" size="small" onClick={() => startEdit(task)}>
               Edit
-            </button>
-            <button type="button" onClick={() => handleDelete(task.id)}>
+            </Button>
+            <Button
+              type="button"
+              size="small"
+              onClick={() => handleDelete(task.id)}
+              color="secondary"
+            >
               Delete
-            </button>
-          </div>
+            </Button>
+          </Box>
         </>
       )}
-    </li>
+    </ListItem>
   );
 
   return (
-    <div className="page-container">
-      <h2>Tasks</h2>
-      <form className="form-inline" onSubmit={handleSubmit}>
-        <input
+    <Container maxWidth="lg" sx={{ mt: 4 }}>
+      <Typography variant="h5" align="center" gutterBottom>
+        Tasks
+      </Typography>
+      <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', gap: 1, mb: 2 }}>
+        <TextField
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Title"
           required
+          fullWidth
         />
-        <input value={content} onChange={(e) => setContent(e.target.value)} placeholder="Content" />
-        <select value={assignedId} onChange={(e) => setAssignedId(e.target.value)}>
-          <option value="">Unassigned</option>
+        <TextField
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          placeholder="Content"
+          fullWidth
+        />
+        <Select
+          value={assignedId}
+          onChange={(e) => setAssignedId(e.target.value)}
+          size="small"
+          sx={{ minWidth: 120 }}
+        >
+          <MenuItem value="">Unassigned</MenuItem>
           {members.map((m) => (
-            <option key={m.id} value={m.id}>
+            <MenuItem key={m.id} value={m.id}>
               {m.name}
-            </option>
+            </MenuItem>
           ))}
-        </select>
-        <button type="submit">Add Task</button>
-      </form>
-      <p>{message}</p>
-      <div className="task-columns">
+        </Select>
+        <Button type="submit" variant="contained">
+          Add Task
+        </Button>
+      </Box>
+      {message && (
+        <Typography variant="body2" sx={{ mb: 2 }}>
+          {message}
+        </Typography>
+      )}
+      <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-start' }}>
         {[
           { key: 'todo', label: 'Todo' },
           { key: 'in-progress', label: 'In Progress' },
           { key: 'done', label: 'Done' },
         ].map((col) => (
-          <div key={col.key} className="task-column">
-            <h3>{col.label}</h3>
-            <ul className="card-list task-list">
-              {tasks.filter((t) => t.status === col.key).map((task) => renderTask(task))}
-            </ul>
-          </div>
+          <Box key={col.key} sx={{ flex: 1 }}>
+            <Typography variant="h6" align="center" gutterBottom>
+              {col.label}
+            </Typography>
+            <List>{tasks.filter((t) => t.status === col.key).map((task) => renderTask(task))}</List>
+          </Box>
         ))}
-      </div>
-    </div>
+      </Box>
+    </Container>
   );
 }
 

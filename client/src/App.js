@@ -1,5 +1,12 @@
-import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link as RouterLink,
+  Navigate,
+} from 'react-router-dom';
 import { useState } from 'react';
+import { AppBar, Toolbar, Typography, Button, Container } from '@mui/material';
 import Register from './pages/Register';
 import Login from './pages/Login';
 import TeamPage from './pages/TeamPage';
@@ -17,18 +24,29 @@ function App() {
 
   return (
     <Router>
-      <div className="App">
-        <header className="app-header">
-          <h1>Team Collaboration</h1>
-          <nav>
-            {!isLoggedIn && <Link to="/register">Register</Link>}
-            {isLoggedIn ? (
-              <button onClick={handleLogout}>Logout</button>
-            ) : (
-              <Link to="/login">Login</Link>
-            )}
-          </nav>
-        </header>
+      <AppBar position="static" sx={{ background: 'linear-gradient(90deg, #6c63ff, #ff6584)' }}>
+        <Toolbar>
+          <Typography variant="h6" sx={{ flexGrow: 1 }}>
+            Team Collaboration
+          </Typography>
+
+          {!isLoggedIn && (
+            <Button color="inherit" component={RouterLink} to="/register">
+              Register
+            </Button>
+          )}
+          {isLoggedIn ? (
+            <Button color="inherit" onClick={handleLogout}>
+              Logout
+            </Button>
+          ) : (
+            <Button color="inherit" component={RouterLink} to="/login">
+              Login
+            </Button>
+          )}
+        </Toolbar>
+      </AppBar>
+      <Container sx={{ mt: 2 }}>
         <Routes>
           <Route
             path="/"
@@ -40,7 +58,7 @@ function App() {
           <Route path="/teams/:teamId/boards" element={<BoardPage />} />
           <Route path="/boards/:boardId/tasks" element={<TaskPage />} />
         </Routes>
-      </div>
+      </Container>
     </Router>
   );
 }
