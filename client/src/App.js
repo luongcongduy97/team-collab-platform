@@ -1,10 +1,4 @@
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Link as RouterLink,
-  Navigate,
-} from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
 import { useState } from 'react';
 import { AppBar, Toolbar, Typography, Button, Box, Container } from '@mui/material';
 import Register from './pages/Register';
