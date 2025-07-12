@@ -1,6 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { Container, Box, TextField, Button, Typography, List, ListItem } from '@mui/material';
+import {
+  Container,
+  Box,
+  TextField,
+  Button,
+  Typography,
+  List,
+  ListItem,
+  ListItemText,
+  Paper,
+  Stack,
+} from '@mui/material';
 import api from '../api/api';
 
 function TeamPage() {
@@ -53,58 +64,97 @@ function TeamPage() {
         Team Management
       </Typography>
 
-      <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', gap: 1, mb: 2 }}>
+      <Box
+        component="form"
+        onSubmit={handleSubmit}
+        sx={{ display: 'flex', gap: 2, mb: 3, flexWrap: 'wrap' }}
+      >
         <TextField
+          label="New team name"
           value={newTeam}
           onChange={(e) => setNewTeam(e.target.value)}
-          placeholder="New team name"
           required
           fullWidth
         />
-        <Button variant="contained" type="submit">
+        <Button
+          type="submit"
+          variant="contained"
+          sx={{
+            background: 'linear-gradient(to right, #6a11cb, #2575fc)',
+            fontWeight: 'bold',
+            px: 4,
+            ':hover': {
+              background: 'linear-gradient(to right, #2575fc, #6a11cb)',
+            },
+          }}
+        >
           Create Team
         </Button>
       </Box>
       {message && (
-        <Typography variant="body2" sx={{ mb: 2 }}>
+        <Typography variant="body2" align="center" sx={{ mb: 2 }}>
           {message}
         </Typography>
       )}
 
       <Typography variant="h6" gutterBottom>
-        All Teams
+        Your Teams
       </Typography>
       <List>
         {teams.map((team) => (
-          <ListItem
+          <Paper
             key={team.id}
+            elevation={2}
             sx={{
-              bgcolor: 'background.paper',
-              mb: 1,
-              borderRadius: 1,
-              boxShadow: 1,
-              alignItems: 'center',
+              p: 2,
+              mb: 2,
+              borderRadius: 2,
+              transition: '0.2s',
+              ':hover': {
+                boxShadow: 4,
+              },
             }}
           >
-            <Typography sx={{ flexGrow: 1 }}>{team.name}</Typography>
-            <Button component={RouterLink} to={`/teams/${team.id}/boards`} sx={{ mr: 1 }}>
-              Boards
-            </Button>
-            <TextField
-              placeholder="Email"
-              value={inviteInputs[team.id] || ''}
-              onChange={(e) => handleInviteInputChange(team.id, e.target.value)}
-              size="small"
-            />
-            <Button
-              onClick={() => handleInvite(team.id)}
-              variant="contained"
-              color="secondary"
-              sx={{ ml: 1 }}
-            >
-              Invite
-            </Button>
-          </ListItem>
+            <ListItem disablePadding sx={{ flexDirection: 'column', alignItems: 'flex-start' }}>
+              <ListItemText
+                primary={
+                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                    {team.name}
+                  </Typography>
+                }
+              />
+              <Stack
+                direction={{ xs: 'column', sm: 'row' }}
+                spacing={1}
+                sx={{ width: '100%', mt: 1 }}
+                alignItems="center"
+              >
+                <Button
+                  variant="outlined"
+                  component={RouterLink}
+                  to={`/teams/${team.id}/boards`}
+                  sx={{ textTransform: 'none' }}
+                >
+                  View Boards
+                </Button>
+                <TextField
+                  label="Invite by email"
+                  size="small"
+                  value={inviteInputs[team.id] || ''}
+                  onChange={(e) => handleInviteInputChange(team.id, e.target.value)}
+                  fullWidth
+                />
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  onClick={() => handleInvite(team.id)}
+                  sx={{ px: 3 }}
+                >
+                  Invite
+                </Button>
+              </Stack>
+            </ListItem>
+          </Paper>
         ))}
       </List>
     </Container>
