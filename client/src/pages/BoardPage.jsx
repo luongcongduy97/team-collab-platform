@@ -1,6 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link as RouterLink } from 'react-router-dom';
-import { Container, Box, TextField, Button, Typography, List, ListItem } from '@mui/material';
+import {
+  Container,
+  Box,
+  TextField,
+  Button,
+  Typography,
+  List,
+  ListItem,
+  ListItemText,
+  Paper,
+  Stack,
+} from '@mui/material';
 import api from '../api/api';
 
 function BoardPage() {
@@ -32,36 +43,79 @@ function BoardPage() {
   return (
     <Container maxWidth="md" sx={{ mt: 4 }}>
       <Typography variant="h5" align="center" gutterBottom>
-        Boards
+        Team Boards
       </Typography>
-      <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', gap: 1, mb: 2 }}>
+
+      <Box
+        component="form"
+        onSubmit={handleSubmit}
+        sx={{ display: 'flex', gap: 2, mb: 3, flexWrap: 'wrap' }}
+      >
         <TextField
+          label="Board Title"
           value={newTitle}
           onChange={(e) => setNewTitle(e.target.value)}
-          placeholder="Board Title"
           required
           fullWidth
         />
-        <Button variant="contained" type="submit">
-          Create Board
+        <Button
+          type="submit"
+          variant="contained"
+          sx={{
+            background: 'linear-gradient(to right, #6a11cb, #2575fc)',
+            fontWeight: 'bold',
+            px: 4,
+            ':hover': {
+              background: 'linear-gradient(to right, #2575fc, #6a11cb)',
+            },
+          }}
+        >
+          Create
         </Button>
       </Box>
       {message && (
-        <Typography variant="body2" sx={{ mb: 2 }}>
+        <Typography variant="body2" align="center" sx={{ mb: 2 }}>
           {message}
         </Typography>
       )}
+      <Typography variant="h6" gutterBottom>
+        Your Boards
+      </Typography>
+
       <List>
         {boards.map((board) => (
-          <ListItem
+          <Paper
             key={board.id}
-            sx={{ bgcolor: 'background.paper', mb: 1, borderRadius: 1, boxShadow: 1 }}
+            elevation={2}
+            sx={{
+              p: 2,
+              mb: 2,
+              borderRadius: 2,
+              transition: '0.2s',
+              ':hover': { boxShadow: 4 },
+            }}
           >
-            <Typography sx={{ flexGrow: 1 }}>{board.title}</Typography>
-            <Button component={RouterLink} to={`/boards/${board.id}/tasks`}>
-              Tasks
-            </Button>
-          </ListItem>
+            <ListItem disablePadding sx={{ flexDirection: 'column', alignItems: 'flex-start' }}>
+              <ListItemText
+                primary={
+                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                    {board.title}
+                  </Typography>
+                }
+              />
+
+              <Stack direction="row" spacing={1} sx={{ width: '100%', mt: 1 }}>
+                <Button
+                  variant="outlined"
+                  component={RouterLink}
+                  to={`/boards/${board.id}/tasks`}
+                  sx={{ textTransform: 'none' }}
+                >
+                  View Tasks
+                </Button>
+              </Stack>
+            </ListItem>
+          </Paper>
         ))}
       </List>
     </Container>
