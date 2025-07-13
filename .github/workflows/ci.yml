@@ -34,14 +34,15 @@ jobs:
         with:
           node-version: 18
           cache: 'npm'
+          cache-dependency-path: |
+            packpage-lock.json
+            client/package-lock.json
       - run: npm ci
       - run: npm ci
         working-directory: client
       - run: npx prisma generate
       - run: npx prisma migrate deploy
       - run: npm run seed
-
-      - run: npm install --global wait-on
 
       - run: |
           nohup node index.js > backend.log 2>&1 &
