@@ -24,10 +24,7 @@ describe('Team Management (UI)', () => {
 
   it('creates a team and invites a user by email', () => {
     // Login as the registered user
-    cy.visit('/login');
-    cy.get('input[name="email"]').type(email);
-    cy.get('input[name="password"]').type(password);
-    cy.get('button[type="submit"]').click();
+    cy.login(email, password);
 
     cy.url().should('include', '/teams');
     cy.contains('Team Management');
