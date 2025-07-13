@@ -7,24 +7,16 @@ describe('Team Management (UI)', () => {
 
   before(() => {
     // Create user to be invited via API
-    cy.request('POST', 'http://localhost:5555/api/auth/register', {
-      name: 'Invite User',
-      email: inviteEmail,
-      password,
-    });
+    cy.register('Invite User', inviteEmail, password);
 
     // Register main user via UI
-    cy.visit('/register');
-    cy.get('input[name="name"]').type('Test Owner');
-    cy.get('input[name="email"]').type(email);
-    cy.get('input[name="password"]').type(password);
-    cy.get('button[type="submit"]').click();
-    cy.contains('Register success');
+    cy.register('Test Owner', email, password);
   });
 
   it('creates a team and invites a user by email', () => {
     // Login as the registered user
     cy.login(email, password);
+    cy.visit('/');
 
     cy.url().should('include', '/teams');
     cy.contains('Team Management');

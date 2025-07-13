@@ -1,6 +1,17 @@
 Cypress.Commands.add('login', (email, password) => {
-  cy.visit('/login');
-  cy.get('input[name="email"]').type(email);
-  cy.get('input[name="password"]').type(password);
-  cy.get('button[type="submit"]').click();
+  const apiUrl = Cypress.env('apiUrl') || 'http://localhost:5555/api';
+  cy.request('POST', `${apiUrl}/auth/login`, { email, password })
+    .its('body.token')
+    .then((token) => {
+      window.localStorage.setItem('token', token);
+    });
+});
+
+Cypress.Commands.add('register', (name, email, password) => {
+  const apiUrl = Cypress.env('apiUrl') || 'http://localhost:5555/api';
+  cy.request('POST', `${apiUrl}/auth/register`, {
+    name,
+    email,
+    password,
+  });
 });

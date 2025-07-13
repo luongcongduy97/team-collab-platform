@@ -4,12 +4,7 @@ describe('Board Page (UI)', () => {
   const password = 'pass123';
 
   before(() => {
-    cy.visit('/register');
-    cy.get('input[name="name"]').type('Board User');
-    cy.get('input[name="email"]').type(email);
-    cy.get('input[name="password"]').type(password);
-    cy.get('button[type="submit"]').click();
-    cy.contains('Register success');
+    cy.register('Board User', email, password);
   });
 
   beforeEach(() => {
