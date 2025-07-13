@@ -10,6 +10,7 @@ import {
   MenuItem,
   List,
   ListItem,
+  Paper,
 } from '@mui/material';
 import api from '../api/api';
 
@@ -110,97 +111,96 @@ function TaskPage() {
   };
 
   const renderTask = (task) => (
-    <ListItem
+    <Paper
       key={task.id}
+      elevation={2}
       sx={{
-        flexDirection: 'column',
-        alignItems: 'flex-start',
-        bgcolor: 'background.paper',
-        borderRadius: 1,
-        boxShadow: 1,
-        mb: 1,
+        p: 2,
+        mb: 2,
+        borderRadius: 2,
+        transition: '0.2s',
+        ':hover': { boxShadow: 4 },
       }}
     >
-      {editingTaskId === task.id ? (
-        <>
-          <TextField
-            value={editTitle}
-            onChange={(e) => setEditTitle(e.target.value)}
-            placeholder="Title"
-            fullWidth
-            size="small"
-            sx={{ mb: 1 }}
-          />
-          <TextField
-            value={editContent}
-            onChange={(e) => setEditContent(e.target.value)}
-            placeholder="Content"
-            fullWidth
-            size="small"
-            sx={{ mb: 1 }}
-          />
-          <Select
-            value={editAssignedId}
-            onChange={(e) => setEditAssignedId(e.target.value)}
-            fullWidth
-            size="small"
-            sx={{ mb: 1 }}
-          >
-            <MenuItem value="">Unassigned</MenuItem>
-            {members.map((m) => (
-              <MenuItem key={m.id} value={m.id}>
-                {m.name}
-              </MenuItem>
-            ))}
-          </Select>
-          <Box sx={{ display: 'flex', gap: 1 }}>
-            <Button
-              type="button"
-              variant="contained"
+      <ListItem disablePadding sx={{ flexDirection: 'column', alignItems: 'flex-start' }}>
+        {editingTaskId === task.id ? (
+          <>
+            <TextField
+              label="Title"
+              value={editTitle}
+              onChange={(e) => setEditTitle(e.target.value)}
+              fullWidth
               size="small"
-              onClick={() => handleUpdate(task.id)}
-            >
-              Save
-            </Button>
-            <Button type="button" size="small" onClick={cancelEdit}>
-              Cancel
-            </Button>
-          </Box>
-        </>
-      ) : (
-        <>
-          <Typography>{task.title}</Typography>
-          {task.content && <Typography sx={{ mb: 1 }}>{task.content}</Typography>}
-          {task.assigned && (
-            <Typography variant="body2" sx={{ mb: 1 }}>
-              Assigned: {task.assigned.name}
-            </Typography>
-          )}
-          <Box sx={{ display: 'flex', gap: 1 }}>
+              sx={{ mb: 1 }}
+            />
+            <TextField
+              value={editContent}
+              onChange={(e) => setEditContent(e.target.value)}
+              label="Content"
+              fullWidth
+              size="small"
+              sx={{ mb: 1 }}
+            />
             <Select
-              value={task.status}
-              onChange={(e) => handleStatusChange(task.id, e.target.value)}
+              value={editAssignedId}
+              onChange={(e) => setEditAssignedId(e.target.value)}
+              fullWidth
               size="small"
+              sx={{ mb: 1 }}
             >
-              <MenuItem value="todo">Todo</MenuItem>
-              <MenuItem value="in-progress">In Progress</MenuItem>
-              <MenuItem value="done">Done</MenuItem>
+              <MenuItem value="">Unassigned</MenuItem>
+              {members.map((m) => (
+                <MenuItem key={m.id} value={m.id}>
+                  {m.name}
+                </MenuItem>
+              ))}
             </Select>
-            <Button type="button" size="small" onClick={() => startEdit(task)}>
-              Edit
-            </Button>
-            <Button
-              type="button"
-              size="small"
-              onClick={() => handleDelete(task.id)}
-              color="secondary"
-            >
-              Delete
-            </Button>
-          </Box>
-        </>
-      )}
-    </ListItem>
+            <Box sx={{ display: 'flex', gap: 1 }}>
+              <Button variant="contained" size="small" onClick={() => handleUpdate(task.id)}>
+                Save
+              </Button>
+              <Button size="small" onClick={cancelEdit}>
+                Cancel
+              </Button>
+            </Box>
+          </>
+        ) : (
+          <>
+            <Typography variant="subtitle1" fontWeight={600}>
+              {task.title}
+            </Typography>
+            {task.content && (
+              <Typography variant="body2" sx={{ mb: 1 }}>
+                {task.content}
+              </Typography>
+            )}
+            {task.assigned && (
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                Assigned: {task.assigned.name}
+              </Typography>
+            )}
+            <Box sx={{ display: 'flex', gap: 1, mt: 1 }}>
+              <Select
+                value={task.status}
+                onChange={(e) => handleStatusChange(task.id, e.target.value)}
+                size="small"
+                sx={{ minWidth: 120 }}
+              >
+                <MenuItem value="todo">Todo</MenuItem>
+                <MenuItem value="in-progress">In Progress</MenuItem>
+                <MenuItem value="done">Done</MenuItem>
+              </Select>
+              <Button size="small" onClick={() => startEdit(task)}>
+                Edit
+              </Button>
+              <Button size="small" onClick={() => handleDelete(task.id)} color="secondary">
+                Delete
+              </Button>
+            </Box>
+          </>
+        )}
+      </ListItem>
+    </Paper>
   );
 
   return (
@@ -208,18 +208,22 @@ function TaskPage() {
       <Typography variant="h5" align="center" gutterBottom>
         Tasks
       </Typography>
-      <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', gap: 1, mb: 2 }}>
+      <Box
+        component="form"
+        onSubmit={handleSubmit}
+        sx={{ display: 'flex', gap: 2, mb: 3, flexWrap: 'wrap' }}
+      >
         <TextField
+          label="Title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          placeholder="Title"
           required
           fullWidth
         />
         <TextField
+          label="Content"
           value={content}
           onChange={(e) => setContent(e.target.value)}
-          placeholder="Content"
           fullWidth
         />
         <Select
@@ -235,12 +239,23 @@ function TaskPage() {
             </MenuItem>
           ))}
         </Select>
-        <Button type="submit" variant="contained">
+        <Button
+          type="submit"
+          variant="contained"
+          sx={{
+            background: 'linear-gradient(to right, #6a11cb, #2575fc)',
+            fontWeight: 'bold',
+            px: 3,
+            ':hover': {
+              background: 'linear-gradient(to right, #2575fc, #6a11cb)',
+            },
+          }}
+        >
           Add Task
         </Button>
       </Box>
       {message && (
-        <Typography variant="body2" sx={{ mb: 2 }}>
+        <Typography variant="body2" align="center" sx={{ mb: 2 }}>
           {message}
         </Typography>
       )}
