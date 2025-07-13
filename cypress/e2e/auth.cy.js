@@ -1,6 +1,8 @@
+const timestamp = Date.now(); // chỉ gọi 1 lần, dùng chung cho toàn file
+const password = 'pass123';
+
 describe('Auth Feature (UI)', () => {
-  const email = `test${Date.now()}@example.com`;
-  const password = 'pass123';
+  const email = `test${timestamp}@example.com`;
 
   it('registers a new user via UI', () => {
     cy.visit('/register');
@@ -19,7 +21,7 @@ describe('Auth Feature (UI)', () => {
 
     cy.get('input[name="email"]').type(email);
     cy.get('input[name="password"]').type(password);
-    cy.get('button[type="submit"').click();
+    cy.get('button[type="submit"]').click();
 
     cy.url().should('include', '/teams');
     cy.contains('Team Management');
@@ -27,15 +29,10 @@ describe('Auth Feature (UI)', () => {
 });
 
 describe('Navbar UI Based on Auth State', () => {
-  const email = `test${Date.now()}@example.com`;
-  const password = 'pass123';
+  const email = `test${timestamp}+nav@example.com`;
 
   before(() => {
-    cy.visit('/register');
-    cy.get('input[name="name"]').type('Test User');
-    cy.get('input[name="email"]').type(email);
-    cy.get('input[name="password"]').type(password);
-    cy.get('button[type="submit"]').click();
+    cy.register('Test User', email, password);
   });
 
   it('shows Login and Register before login', () => {
@@ -47,6 +44,7 @@ describe('Navbar UI Based on Auth State', () => {
 
   it('shows Logout after login', () => {
     cy.login(email, password);
+    cy.visit('/');
 
     cy.contains('Logout').should('exist');
     cy.contains('Login').should('not.exist');
