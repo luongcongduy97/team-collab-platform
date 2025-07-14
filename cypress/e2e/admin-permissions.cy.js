@@ -11,33 +11,34 @@ describe('Admin permissions API', () => {
   before(() => {
     const api = Cypress.env('apiUrl');
 
-    cy.request('POST', `${api}/auth/register`, {
-      name: 'Admin',
-      email: adminEmail,
-      password,
-      role: 'ADMIN',
-    })
+    return cy
+      .request('POST', `${api}/auth/register`, {
+        name: 'Admin',
+        email: adminEmail,
+        password,
+        role: 'ADMIN',
+      })
       .then((res) => {
         adminId = res.body.user.id;
 
-        return cy
-          .request('POST', `${api}/auth/register`, {
-            name: 'Member',
-            email: memberEmail,
-            password,
-            role: 'MEMBER',
-          })
-          .then(() =>
-            cy
-              .request('POST', `${api}/auth/login`, {
-                email: adminEmail,
-                password,
-              })
-              .its('body.token'),
-          );
+        return cy.request('POST', `${api}/auth/register`, {
+          name: 'Member',
+          email: memberEmail,
+          password,
+          role: 'MEMBER',
+        });
       })
+      .then(() =>
+        cy
+          .request('POST', `${api}/auth/login`, {
+            email: adminEmail,
+            password,
+          })
+          .its('body.token'),
+      )
       .then((token) => {
         adminToken = token;
+
         return cy
           .request('POST', `${api}/auth/login`, {
             email: memberEmail,
@@ -47,6 +48,7 @@ describe('Admin permissions API', () => {
       })
       .then((token) => {
         memberToken = token;
+
         return cy.request({
           method: 'POST',
           url: `${api}/teams`,
@@ -56,6 +58,12 @@ describe('Admin permissions API', () => {
       })
       .then((res) => {
         teamId = res.body.id;
+        Cypress.env({
+          adminId,
+          adminToken,
+          memberToken,
+          teamId,
+        });
       });
   });
 
@@ -63,7 +71,7 @@ describe('Admin permissions API', () => {
     cy.request({
       method: 'POST',
       url: `${Cypress.env('apiUrl')}/teams`,
-      headers: { Authorization: `Bearer ${memberToken}` },
+      headers: { Authorization: `Bearer ${Cypress.env('memberToken')}` },
       body: { name: `Nope ${timestamp}` },
       failOnStatusCode: false,
     })
@@ -74,8 +82,8 @@ describe('Admin permissions API', () => {
   it('rejects board creation by non-admin', () => {
     cy.request({
       method: 'POST',
-      url: `${Cypress.env('apiUrl')}/teams/${teamId}/boards`,
-      headers: { Authorization: `Bearer ${memberToken}` },
+      url: `${Cypress.env('apiUrl')}/teams/${Cypress.env('teamId')}/boards`,
+      headers: { Authorization: `Bearer ${Cypress.env('memberToken')}` },
       body: { title: 'New Board' },
       failOnStatusCode: false,
     })
@@ -86,9 +94,9 @@ describe('Admin permissions API', () => {
   it('rejects invites by non-admin', () => {
     cy.request({
       method: 'POST',
-      url: `${Cypress.env('apiUrl')}/teams/${teamId}/invite`,
-      headers: { Authorization: `Bearer ${memberToken}` },
-      body: { userId: adminId },
+      url: `${Cypress.env('apiUrl')}/teams/${Cypress.env('teamId')}/invite`,
+      headers: { Authorization: `Bearer ${Cypress.env('memberToken')}` },
+      body: { userId: Cypress.env('adminId') },
       failOnStatusCode: false,
     })
       .its('status')
