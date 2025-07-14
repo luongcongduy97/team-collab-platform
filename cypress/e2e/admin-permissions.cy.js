@@ -19,7 +19,6 @@ describe('Admin permissions API', () => {
     })
       .then((res) => {
         adminId = res.body.user.id;
-        cy.wrap(adminId).as('adminId');
 
         return cy.request('POST', `${api}/auth/register`, {
           name: 'Member',
@@ -38,7 +37,6 @@ describe('Admin permissions API', () => {
       )
       .then((token) => {
         adminToken = token;
-        cy.wrap(adminToken).as('adminToken');
 
         return cy
           .request('POST', `${api}/auth/login`, {
@@ -49,7 +47,6 @@ describe('Admin permissions API', () => {
       })
       .then((token) => {
         memberToken = token;
-        cy.wrap(memberToken).as('memberToken');
 
         return cy.request({
           method: 'POST',
@@ -60,12 +57,18 @@ describe('Admin permissions API', () => {
       })
       .then((res) => {
         teamId = res.body.id;
-        cy.wrap(teamId).as('teamId');
       });
   });
 
+  beforeEach(() => {
+    cy.wrap(adminId).as('adminId');
+    cy.wrap(adminToken).as('adminToken');
+    cy.wrap(memberToken).as('memberToken');
+    cy.wrap(teamId).as('teamId');
+  });
+
   it('rejects team creation by non-admin', () => {
-    cy.get('@' + 'memberToken').then((token) => {
+    cy.get('@memberToken').then((token) => {
       cy.request({
         method: 'POST',
         url: `${Cypress.env('apiUrl')}/teams`,
@@ -79,8 +82,8 @@ describe('Admin permissions API', () => {
   });
 
   it('rejects board creation by non-admin', () => {
-    cy.get('@' + 'memberToken').then((token) => {
-      cy.get('@' + 'teamId').then((tId) => {
+    cy.get('@memberToken').then((token) => {
+      cy.get('@teamId').then((tId) => {
         cy.request({
           method: 'POST',
           url: `${Cypress.env('apiUrl')}/teams/${tId}/boards`,
@@ -95,9 +98,9 @@ describe('Admin permissions API', () => {
   });
 
   it('rejects invites by non-admin', () => {
-    cy.get('@' + 'memberToken').then((token) => {
-      cy.get('@' + 'teamId').then((tId) => {
-        cy.get('@' + 'adminId').then((aId) => {
+    cy.get('@memberToken').then((token) => {
+      cy.get('@teamId').then((tId) => {
+        cy.get('@adminId').then((aId) => {
           cy.request({
             method: 'POST',
             url: `${Cypress.env('apiUrl')}/teams/${tId}/invite`,
