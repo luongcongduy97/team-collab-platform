@@ -19,25 +19,27 @@ describe('Admin permissions API', () => {
     })
       .then((res) => {
         adminId = res.body.user.id;
+        cy.wrap(adminId).as('adminId');
 
-        return cy
-          .request('POST', `${api}/auth/register`, {
-            name: 'Member',
-            email: memberEmail,
-            password,
-            role: 'MEMBER',
-          })
-          .then(() =>
-            cy
-              .request('POST', `${api}/auth/login`, {
-                email: adminEmail,
-                password,
-              })
-              .its('body.token'),
-          );
+        return cy.request('POST', `${api}/auth/register`, {
+          name: 'Member',
+          email: memberEmail,
+          password,
+          role: 'MEMBER',
+        });
       })
+      .then(() =>
+        cy
+          .request('POST', `${api}/auth/login`, {
+            email: adminEmail,
+            password,
+          })
+          .its('body.token'),
+      )
       .then((token) => {
         adminToken = token;
+        cy.wrap(adminToken).as('adminToken');
+
         return cy
           .request('POST', `${api}/auth/login`, {
             email: memberEmail,
@@ -47,6 +49,8 @@ describe('Admin permissions API', () => {
       })
       .then((token) => {
         memberToken = token;
+        cy.wrap(memberToken).as('memberToken');
+
         return cy.request({
           method: 'POST',
           url: `${api}/teams`,
@@ -56,42 +60,55 @@ describe('Admin permissions API', () => {
       })
       .then((res) => {
         teamId = res.body.id;
+        cy.wrap(teamId).as('teamId');
       });
   });
 
   it('rejects team creation by non-admin', () => {
-    cy.request({
-      method: 'POST',
-      url: `${Cypress.env('apiUrl')}/teams`,
-      headers: { Authorization: `Bearer ${memberToken}` },
-      body: { name: `Nope ${timestamp}` },
-      failOnStatusCode: false,
-    })
-      .its('status')
-      .should('eq', 403);
+    cy.get('@' + 'memberToken').then((token) => {
+      cy.request({
+        method: 'POST',
+        url: `${Cypress.env('apiUrl')}/teams`,
+        headers: { Authorization: `Bearer ${token}` },
+        body: { name: `Nope ${timestamp}` },
+        failOnStatusCode: false,
+      })
+        .its('status')
+        .should('eq', 403);
+    });
   });
 
   it('rejects board creation by non-admin', () => {
-    cy.request({
-      method: 'POST',
-      url: `${Cypress.env('apiUrl')}/teams/${teamId}/boards`,
-      headers: { Authorization: `Bearer ${memberToken}` },
-      body: { title: 'New Board' },
-      failOnStatusCode: false,
-    })
-      .its('status')
-      .should('eq', 403);
+    cy.get('@' + 'memberToken').then((token) => {
+      cy.get('@' + 'teamId').then((tId) => {
+        cy.request({
+          method: 'POST',
+          url: `${Cypress.env('apiUrl')}/teams/${tId}/boards`,
+          headers: { Authorization: `Bearer ${token}` },
+          body: { title: 'New Board' },
+          failOnStatusCode: false,
+        })
+          .its('status')
+          .should('eq', 403);
+      });
+    });
   });
 
   it('rejects invites by non-admin', () => {
-    cy.request({
-      method: 'POST',
-      url: `${Cypress.env('apiUrl')}/teams/${teamId}/invite`,
-      headers: { Authorization: `Bearer ${memberToken}` },
-      body: { userId: adminId },
-      failOnStatusCode: false,
-    })
-      .its('status')
-      .should('eq', 403);
+    cy.get('@' + 'memberToken').then((token) => {
+      cy.get('@' + 'teamId').then((tId) => {
+        cy.get('@' + 'adminId').then((aId) => {
+          cy.request({
+            method: 'POST',
+            url: `${Cypress.env('apiUrl')}/teams/${tId}/invite`,
+            headers: { Authorization: `Bearer ${token}` },
+            body: { userId: aId },
+            failOnStatusCode: false,
+          })
+            .its('status')
+            .should('eq', 403);
+        });
+      });
+    });
   });
 });
