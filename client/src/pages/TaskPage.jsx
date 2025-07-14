@@ -39,7 +39,7 @@ function TaskPage() {
       .get('/teams/my')
       .then((res) => {
         const teams = res.data || [];
-        const team = teams.find((t) => t.boards.some((b) => b.id === boardId));
+        const team = teams.find((t) => t.boards.some((b) => String(b.id) === String(boardId)));
         setMembers(team ? team.members : []);
       })
       .catch((err) => console.error(err));
@@ -147,6 +147,7 @@ function TaskPage() {
               fullWidth
               size="small"
               sx={{ mb: 1 }}
+              data-testid="edit-assign-select"
             >
               <MenuItem value="">Unassigned</MenuItem>
               {members.map((m) => (
@@ -185,6 +186,7 @@ function TaskPage() {
                 onChange={(e) => handleStatusChange(task.id, e.target.value)}
                 size="small"
                 sx={{ minWidth: 120 }}
+                data-testid="status-select"
               >
                 <MenuItem value="todo">Todo</MenuItem>
                 <MenuItem value="in-progress">In Progress</MenuItem>
@@ -231,6 +233,7 @@ function TaskPage() {
           onChange={(e) => setAssignedId(e.target.value)}
           size="small"
           sx={{ minWidth: 120 }}
+          data-testid="assign-select"
         >
           <MenuItem value="">Unassigned</MenuItem>
           {members.map((m) => (
