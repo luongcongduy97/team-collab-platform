@@ -106,4 +106,74 @@ describe('Task Page (UI)', () => {
     cy.wait('@deleteTask');
     cy.contains('Delete Me').should('not.exist');
   });
+
+  it('assigns a user when creating a task', () => {
+    cy.intercept('GET', '/api/boards/1/tasks', { statusCode: 200, body: [] }).as('initialTasks');
+    cy.intercept('GET', '/api/teams/my', {
+      statusCode: 200,
+      body: [
+        {
+          id: 1,
+          name: 'Team 1',
+          boards: [{ id: 1, title: 'Board 1' }],
+          members: [
+            { id: 1, name: 'Member 1' },
+            { id: 2, name: 'Member 2' },
+          ],
+        },
+      ],
+    }).as('getTeams');
+    cy.intercept('POST', '/api/boards/1/tasks', (req) => {
+      expect(req.body.assignedId).to.eq(1);
+      req.reply({
+        statusCode: 201,
+        body: {
+          id: 3,
+          title: 'Assigned Task',
+          content: '',
+          status: 'todo',
+          assigned: { id: 1, name: 'Member 1' },
+        },
+      });
+    }).as('createTask');
+
+    cy.visit('/boards/1/tasks');
+    cy.wait(['@initialTasks', '@getTeams']);
+
+    cy.get('input[label="Title"], input[placeholder="Title"], input').first().type('Assigned Task');
+    cy.get('[data-testid="assign-select"]').click();
+    cy.get('ul[role="listbox"]').contains('Member 1').click();
+    cy.contains('button', 'Add Task').click();
+
+    cy.wait('@createTask');
+    cy.contains('Assigned Task').should('exist');
+    cy.contains('Assigned: Member 1').should('exist');
+  });
+
+  it('changes task status', () => {
+    cy.intercept('GET', '/api/boards/1/tasks', {
+      statusCode: 200,
+      body: [{ id: 1, title: 'Task A', status: 'todo' }],
+    }).as('getTasks');
+    cy.intercept('GET', '/api/teams/my', {
+      statusCode: 200,
+      body: [{ id: 1, name: 'Team 1', boards: [{ id: 1, title: 'Board 1' }], members: [] }],
+    }).as('getTeams');
+    cy.intercept('PUT', '/api/boards/tasks/1', (req) => {
+      expect(req.body.status).to.eq('in-progress');
+      req.reply({
+        statusCode: 200,
+        body: { id: 1, title: 'Task A', status: 'in-progress' },
+      });
+    }).as('updateStatus');
+
+    cy.visit('/boards/1/tasks');
+    cy.wait(['@getTasks', '@getTeams']);
+
+    cy.get('[data-testid="status-select"]').click();
+    cy.get('ul[role="listbox"]').contains('In Progress').click();
+
+    cy.wait('@updateStatus');
+    cy.get('[data-testid="status-select"]').should('contain', 'In Progress');
+  });
 });
