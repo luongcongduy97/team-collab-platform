@@ -7,11 +7,12 @@ Cypress.Commands.add('login', (email, password) => {
     });
 });
 
-Cypress.Commands.add('register', (name, email, password) => {
+Cypress.Commands.add('register', (name, email, password, role = 'ADMIN') => {
   const apiUrl = Cypress.env('apiUrl') || 'http://localhost:5555/api';
   cy.request('POST', `${apiUrl}/auth/register`, {
     name,
     email,
     password,
+    role,
   });
 });
