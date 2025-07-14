@@ -5,7 +5,7 @@ const prisma = require('../prisma/client');
 const JWT_SECRET = process.env.JWT_SECRET;
 
 exports.register = async (req, res) => {
-  const { email, password, name } = req.body;
+  const { email, password, name, role } = req.body;
 
   try {
     const existing = await prisma.user.findUnique({ where: { email } });
@@ -18,7 +18,7 @@ exports.register = async (req, res) => {
         email,
         password: hashed,
         name,
-        role: 'ADMIN',
+        ...(role ? { role } : {}),
       },
     });
 
