@@ -79,6 +79,7 @@ describe('Task Page (UI)', () => {
         cy.get(`#${inputId}`).clear();
         cy.get(`#${inputId}`).type('Updated Task');
       });
+
     cy.contains('button', 'Save').click();
 
     cy.wait('@updateTask');
