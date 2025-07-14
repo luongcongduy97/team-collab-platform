@@ -76,13 +76,14 @@ describe('Task Page (UI)', () => {
     cy.contains('label', 'Title')
       .invoke('attr', 'for')
       .then((inputId) => {
+        cy.get(`#${inputId}`).clear();
         cy.get(`#${inputId}`).type('Updated Task');
       });
-    cy.contains('label', 'Title')
-      .invoke('attr', 'for')
-      .then((inputId) => {
-        cy.get(`#${inputId}`).type('Updated Task');
-      });
+    // cy.contains('label', 'Title')
+    //   .invoke('attr', 'for')
+    //   .then((inputId) => {
+    //     cy.get(`#${inputId}`).type('Updated Task');
+    //   });
     cy.contains('button', 'Save').click();
 
     cy.wait('@updateTask');
