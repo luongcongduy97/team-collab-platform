@@ -9,43 +9,53 @@ describe('Admin permissions API', () => {
   let teamId;
 
   before(() => {
-    cy.request('POST', `${Cypress.env('apiUrl')}/auth/register`, {
+    const api = Cypress.env('apiUrl');
+
+    cy.request('POST', `${api}/auth/register`, {
       name: 'Admin',
       email: adminEmail,
       password,
+      role: 'ADMIN'
     }).then((res) => {
       adminId = res.body.user.id;
-    });
 
-    cy.request('POST', `${Cypress.env('apiUrl')}/auth/register`, {
-      name: 'Member',
-      email: memberEmail,
-      password,
-      role: 'MEMBER',
-    });
-
-    cy.request('POST', `${Cypress.env('apiUrl')}/auth/login`, {
-      email: adminEmail,
-      password,
-    }).then((res) => {
-      adminToken = res.body.token;
-    });
-
-    cy.request('POST', `${Cypress.env('apiUrl')}/auth/login`, {
-      email: memberEmail,
-      password,
-    }).then((res) => {
-      memberToken = res.body.token;
-    });
-
-    cy.request({
-      method: 'POST',
-      url: `${Cypress.env('apiUrl')}/teams`,
-      headers: { Authorization: `Bearer ${adminToken}` },
-      body: { name: `Team ${timestamp}` },
-    }).then((res) => {
-      teamId = res.body.id;
-    });
+      return cy
+        .request('POST', `${api}/auth/register`, {
+          name: 'Member',
+          email: memberEmail,
+          password,
+          role: 'MEMBER',
+        })
+        .then(() =>
+          cy
+            .request('POST', `${api}/auth/login`, {
+              email: adminEmail,
+              password,
+            })
+            .its('body.token')
+        );
+    })
+      .then((token) => {
+        adminToken = token;
+        return cy
+          .request('POST', `${api}/auth/login`, {
+            email: memberEmail,
+            password,
+          })
+          .its('body.token');
+      })
+      .then((token) => {
+        memberToken = token;
+        return cy.request({
+          method: 'POST',
+          url: `${api}/teams`,
+          headers: { Authorization: `Bearer ${adminToken}` },
+          body: { name: `Team ${timestamp}` },
+        });
+      })
+      .then((res) => {
+        teamId = res.body.id;
+      });
   });
 
   it('rejects team creation by non-admin', () => {
