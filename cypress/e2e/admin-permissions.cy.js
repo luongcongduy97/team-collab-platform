@@ -16,25 +16,26 @@ describe('Admin permissions API', () => {
       email: adminEmail,
       password,
       role: 'ADMIN',
-    }).then((res) => {
-      adminId = res.body.user.id;
-
-      return cy
-        .request('POST', `${api}/auth/register`, {
-          name: 'Member',
-          email: memberEmail,
-          password,
-          role: 'MEMBER',
-        })
-        .then(() =>
-          cy
-            .request('POST', `${api}/auth/login`, {
-              email: adminEmail,
-              password,
-            })
-            .its('body.token')
-        );
     })
+      .then((res) => {
+        adminId = res.body.user.id;
+
+        return cy
+          .request('POST', `${api}/auth/register`, {
+            name: 'Member',
+            email: memberEmail,
+            password,
+            role: 'MEMBER',
+          })
+          .then(() =>
+            cy
+              .request('POST', `${api}/auth/login`, {
+                email: adminEmail,
+                password,
+              })
+              .its('body.token'),
+          );
+      })
       .then((token) => {
         adminToken = token;
         return cy
@@ -65,7 +66,9 @@ describe('Admin permissions API', () => {
       headers: { Authorization: `Bearer ${memberToken}` },
       body: { name: `Nope ${timestamp}` },
       failOnStatusCode: false,
-    }).its('status').should('eq', 403);
+    })
+      .its('status')
+      .should('eq', 403);
   });
 
   it('rejects board creation by non-admin', () => {
@@ -75,7 +78,9 @@ describe('Admin permissions API', () => {
       headers: { Authorization: `Bearer ${memberToken}` },
       body: { title: 'New Board' },
       failOnStatusCode: false,
-    }).its('status').should('eq', 403);
+    })
+      .its('status')
+      .should('eq', 403);
   });
 
   it('rejects invites by non-admin', () => {
@@ -85,6 +90,8 @@ describe('Admin permissions API', () => {
       headers: { Authorization: `Bearer ${memberToken}` },
       body: { userId: adminId },
       failOnStatusCode: false,
-    }).its('status').should('eq', 403);
+    })
+      .its('status')
+      .should('eq', 403);
   });
 });
