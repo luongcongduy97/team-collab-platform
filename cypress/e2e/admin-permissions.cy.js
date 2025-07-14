@@ -34,7 +34,7 @@ describe('Admin permissions API', () => {
             email: adminEmail,
             password,
           })
-          .its('body.token')
+          .its('body.token'),
       )
       .then((token) => {
         adminToken = token;
@@ -66,7 +66,6 @@ describe('Admin permissions API', () => {
         });
       });
   });
-
 
   it('rejects team creation by non-admin', () => {
     cy.request({
