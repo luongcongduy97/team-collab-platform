@@ -52,4 +52,61 @@ describe('Task Page (UI)', () => {
     cy.contains('Task created');
     cy.contains('New Task').should('exist');
   });
+
+  it('Edit an existing task', () => {
+    cy.intercept('GET', '/api/boards/1/tasks', {
+      statusCode: 200,
+      body: [{ id: 1, title: 'Old Task', status: 'todo' }],
+    }).as('getTasks');
+
+    cy.intercept('GET', '/api/teams/my', {
+      statusCode: 200,
+      body: [{ id: 1, name: 'Team 1', boards: [{ id: 1, title: 'Board 1' }], members: [] }],
+    }).as('getTeams');
+
+    cy.intercept('PUT', '/api/boards/tasks/1', {
+      statusCode: 200,
+      body: { id: 1, title: 'Updated Task', status: 'todo', content: '' },
+    }).as('updateTask');
+
+    cy.visit('/boards/1/tasks');
+    cy.wait(['@getTasks', '@getTeams']);
+
+    cy.contains('button', 'Edit').click();
+    cy.contains('label', 'Title')
+      .invoke('attr', 'for')
+      .then((inputId) => {
+        cy.get(`#${inputId}`).type('Updated Task');
+      });
+    cy.contains('label', 'Title')
+      .invoke('attr', 'for')
+      .then((inputId) => {
+        cy.get(`#${inputId}`).type('Updated Task');
+      });
+    cy.contains('button', 'Save').click();
+
+    cy.wait('@updateTask');
+    cy.contains('Updated Task').should('exist');
+  });
+
+  it('deletes a task', () => {
+    cy.intercept('GET', '/api/boards/1/tasks', {
+      statusCode: 200,
+      body: [{ id: 1, title: 'Delete Me', status: 'todo' }],
+    }).as('getTasks');
+    cy.intercept('GET', '/api/teams/my', {
+      statusCode: 200,
+      body: [{ id: 1, name: 'Team 1', boards: [{ id: 1, title: 'Board 1' }], members: [] }],
+    }).as('getTeams');
+    cy.intercept('DELETE', '/api/boards/tasks/1', {
+      statusCode: 204,
+    }).as('deleteTask');
+
+    cy.visit('/boards/1/tasks');
+    cy.wait(['@getTasks', '@getTeams']);
+
+    cy.contains('button', 'Delete').click();
+    cy.wait('@deleteTask');
+    cy.contains('Delete Me').should('not.exist');
+  });
 });
