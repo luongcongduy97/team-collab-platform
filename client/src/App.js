@@ -6,7 +6,7 @@ import Login from './pages/Login';
 import TeamPage from './pages/TeamPage';
 import BoardPage from './pages/BoardPage';
 import TaskPage from './pages/TaskPage';
-
+import ChatPage from './pages/ChatPage';
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
 
@@ -37,9 +37,14 @@ function App() {
               </Button>
             )}
             {isLoggedIn ? (
-              <Button color="inherit" onClick={handleLogout}>
-                Logout
-              </Button>
+              <>
+                <Button color="inherit" component={Link} to="/chat">
+                  Chat
+                </Button>
+                <Button color="inherit" onClick={handleLogout}>
+                  Logout
+                </Button>
+              </>
             ) : (
               <Button color="inherit" component={Link} to="/login">
                 Login
@@ -59,6 +64,7 @@ function App() {
             <Route path="/teams" element={<TeamPage />} />
             <Route path="/teams/:teamId/boards" element={<BoardPage />} />
             <Route path="/boards/:boardId/tasks" element={<TaskPage />} />
+            <Route path="/chat" element={<ChatPage />} />
           </Routes>
         </Container>
       </Box>
