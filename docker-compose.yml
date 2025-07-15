@@ -14,7 +14,7 @@ services:
     environment:
       - DATABASE_URL=${DATABASE_URL}
       - PORT=5555
-    command: sh -c "npx prisma migrate dev --name init && npm run seed && node index.js"
+    command: sh -c "npm install && npx prisma migrate dev --name init && npm run seed && node index.js"
 
   client:
     image: node:18
