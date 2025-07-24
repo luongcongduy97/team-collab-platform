@@ -39,9 +39,6 @@ function App() {
             )}
             {isLoggedIn ? (
               <>
-                <Button color="inherit" component={Link} to="/chat">
-                  Chat
-                </Button>
                 <Button color="inherit" onClick={handleLogout}>
                   Logout
                 </Button>
