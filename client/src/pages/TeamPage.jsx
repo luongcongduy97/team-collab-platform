@@ -137,6 +137,14 @@ function TeamPage() {
                 >
                   View Boards
                 </Button>
+                <Button
+                  variant="outlined"
+                  component={RouterLink}
+                  to={`/teams/${team.id}/chat`}
+                  sx={{ textTransform: 'none' }}
+                >
+                  Chat
+                </Button>
                 <TextField
                   label="Invite by email"
                   size="small"
