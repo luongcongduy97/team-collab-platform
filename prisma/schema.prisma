@@ -30,6 +30,7 @@ model Team {
   name     String
   members User[] @relation("TeamMembers")
   boards   Board[]
+  messages Message[]
 }
 
 model Board {
