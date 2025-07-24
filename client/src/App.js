@@ -62,7 +62,7 @@ function App() {
             <Route path="/teams" element={<TeamPage />} />
             <Route path="/teams/:teamId/boards" element={<BoardPage />} />
             <Route path="/boards/:boardId/tasks" element={<TaskPage />} />
-            <Route path="/chat" element={<ChatPage />} />
+            <Route path="/teams/:teamId/chat" element={<ChatPage />} />
           </Routes>
         </Container>
       </Box>
