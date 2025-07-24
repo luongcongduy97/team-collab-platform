@@ -5,7 +5,8 @@ import { useParams } from 'react-router-dom';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5555/api';
 const SOCKET_URL = API_URL.replace('/api', '');
-const socket = io(SOCKET_URL);
+const ioClient = typeof window !== 'undefined' && window.io ? window.io : io;
+const socket = ioClient(SOCKET_URL);
 
 function ChatPage() {
   const { teamId } = useParams();
