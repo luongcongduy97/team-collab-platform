@@ -1,8 +1,8 @@
 const express = require('express');
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 const messageController = require('../controllers/message.controller');
 const authMiddleware = require('../middleware/auth.middleware');
 
-router.get('/', authMiddleware, messageController.getMessages);
+router.get('/:teamId/messages', authMiddleware, messageController.getMessages);
 
 module.exports = router;

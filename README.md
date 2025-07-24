@@ -16,7 +16,8 @@ This repository contains a simple full‑stack application that demonstrates a s
 - Manage teams: create teams, invite members by user ID or email, list your teams
 - Boards inside teams: create boards and list boards for a team
 - Tasks inside boards: create, update and delete tasks, assign members and change task status (todo / in‑progress / done)
-- Real-time team chat using WebSockets
+- Real-time team chat using WebSockets (each team has its own chat room)
+- Access a team's chat at `/teams/<teamId>/chat`
 
 ## Getting Started
 

@@ -29,22 +29,43 @@ app.use('/api/teams', teamRoutes);
 app.use('/api/teams', boardRoutes);
 app.use('/api/boards', taskRoutes);
 app.use('/api/messages', messageRoutes);
+app.use('/api/teams', messageRoutes);
 
-io.on('connection', async (socket) => {
-  const messages = await prisma.message.findMany({
-    orderBy: { createdAt: 'asc' },
-    include: { user: { select: { id: true, name: true } } },
-  });
-  socket.emit('messages', messages);
-
-  socket.on('send-message', async ({ token, content }) => {
+io.on('connection', (socket) => {
+  socket.on('join-team', async ({ token, teamId }) => {
     try {
       const { userId } = jwt.verify(token, process.env.JWT_SECRET);
-      const message = await prisma.message.create({
-        data: { content, userId },
+      const team = await prisma.team.findFirst({
+        where: { id: teamId, members: { some: { id: userId } } },
+      });
+      if (!team) return;
+
+      socket.join(`team-${teamId}`);
+
+      const messages = await prisma.message.findMany({
+        where: { teamId },
+        orderBy: { createdAt: 'asc' },
         include: { user: { select: { id: true, name: true } } },
       });
-      io.emit('new-message', message);
+      socket.emit('messages', messages);
+    } catch (err) {
+      console.error('[JOIN_TEAM]', err);
+    }
+  });
+
+  socket.on('send-message', async ({ token, teamId, content }) => {
+    try {
+      const { userId } = jwt.verify(token, process.env.JWT_SECRET);
+      const team = await prisma.team.findFirst({
+        where: { id: teamId, members: { some: { id: userId } } },
+      });
+      if (!team) return;
+
+      const message = await prisma.message.create({
+        data: { content, userId, teamId },
+        include: { user: { select: { id: true, name: true } } },
+      });
+      io.to(`team-${teamId}`).emit('new-message', message);
     } catch (err) {
       console.error('[SOCKET_MESSAGE]', err);
     }

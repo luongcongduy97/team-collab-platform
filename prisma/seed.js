@@ -56,6 +56,14 @@ async function main() {
       board: { connect: { id: board.id } },
     },
   });
+
+  await prisma.message.create({
+    data: {
+      content: 'Welcome to the team chat!',
+      user: { connect: { id: admin.id } },
+      team: { connect: { id: team.id } },
+    },
+  });
 }
 
 main()
