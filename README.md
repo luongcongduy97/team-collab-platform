@@ -18,6 +18,7 @@ This repository contains a simple full‑stack application that demonstrates a s
 - Tasks inside boards: create, update and delete tasks, assign members and change task status (todo / in‑progress / done)
 - Real-time team chat using WebSockets (each team has its own chat room)
 - Access a team's chat at `/teams/<teamId>/chat`
+- Real-time task notifications using WebSockets
 
 ## Getting Started
 
