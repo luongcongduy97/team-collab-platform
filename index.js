@@ -19,6 +19,7 @@ const teamRoutes = require('./src/routes/team.routes');
 const boardRoutes = require('./src/routes/board.routes');
 const taskRoutes = require('./src/routes/task.routes');
 const messageRoutes = require('./src/routes/message.routes');
+const notificationRoutes = require('./src/routes/notification.routes');
 
 app.use(express.json());
 
@@ -30,6 +31,7 @@ app.use('/api/teams', boardRoutes);
 app.use('/api/boards', taskRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/teams', messageRoutes);
+app.use('/api', notificationRoutes);
 
 io.on('connection', (socket) => {
   socket.on('join-team', async ({ token, teamId }) => {

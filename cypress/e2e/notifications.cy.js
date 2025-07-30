@@ -13,6 +13,10 @@ describe('Notifications Page (UI)', () => {
   });
 
   it('shows task notifications from socket events', () => {
+    cy.intercept('GET', '/api/notifications', {
+      statusCode: 200,
+      body: [],
+    }).as('getNotifications');
     cy.intercept('GET', '/api/teams/my', {
       statusCode: 200,
       body: [{ id: 1, name: 'Team 1' }],
@@ -34,7 +38,7 @@ describe('Notifications Page (UI)', () => {
       },
     });
 
-    cy.wait('@getTeams');
+    cy.wait(['@getTeams', '@getNotifications']);
 
     cy.get('@emit').should('have.been.calledWithMatch', 'join-team', {
       teamId: 1,
