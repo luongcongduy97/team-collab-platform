@@ -67,6 +67,7 @@ function App() {
             <Route path="/teams/:teamId/boards" element={<BoardPage />} />
             <Route path="/boards/:boardId/tasks" element={<TaskPage />} />
             <Route path="/teams/:teamId/chat" element={<ChatPage />} />
+            <Route path="/notifications" element={<Notifications />} />
           </Routes>
         </Container>
       </Box>
