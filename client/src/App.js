@@ -7,6 +7,7 @@ import TeamPage from './pages/TeamPage';
 import BoardPage from './pages/BoardPage';
 import TaskPage from './pages/TaskPage';
 import ChatPage from './pages/ChatPage';
+import Notifications from './pages/Notifications';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
@@ -39,6 +40,9 @@ function App() {
             )}
             {isLoggedIn ? (
               <>
+                <Button color="inherit" component={Link} to="/notifications">
+                  Notifications
+                </Button>
                 <Button color="inherit" onClick={handleLogout}>
                   Logout
                 </Button>
