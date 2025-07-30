@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { useParams } from 'react-router-dom';
 import {
   Container,
@@ -82,6 +83,14 @@ function TaskPage() {
     }
   };
 
+  const handleDragEnd = (result) => {
+    const { destination, source, draggableId } = result;
+    if (!destination) return;
+    if (destination.droppableId !== source.droppableId) {
+      handleStatusChange(draggableId, destination.droppableId);
+    }
+  };
+
   const startEdit = (task) => {
     setEditingTaskId(task.id);
     setEditTitle(task.title);
@@ -110,99 +119,104 @@ function TaskPage() {
     }
   };
 
-  const renderTask = (task) => (
-    <Paper
-      key={task.id}
-      elevation={2}
-      sx={{
-        p: 2,
-        mb: 2,
-        borderRadius: 2,
-        transition: '0.2s',
-        ':hover': { boxShadow: 4 },
-      }}
-    >
-      <ListItem disablePadding sx={{ flexDirection: 'column', alignItems: 'flex-start' }}>
-        {editingTaskId === task.id ? (
-          <>
-            <TextField
-              label="Title"
-              value={editTitle}
-              onChange={(e) => setEditTitle(e.target.value)}
-              fullWidth
-              size="small"
-              sx={{ mb: 1 }}
-            />
-            <TextField
-              value={editContent}
-              onChange={(e) => setEditContent(e.target.value)}
-              label="Content"
-              fullWidth
-              size="small"
-              sx={{ mb: 1 }}
-            />
-            <Select
-              value={editAssignedId}
-              onChange={(e) => setEditAssignedId(e.target.value)}
-              fullWidth
-              size="small"
-              sx={{ mb: 1 }}
-              data-testid="edit-assign-select"
-            >
-              <MenuItem value="">Unassigned</MenuItem>
-              {members.map((m) => (
-                <MenuItem key={m.id} value={m.id}>
-                  {m.name}
-                </MenuItem>
-              ))}
-            </Select>
-            <Box sx={{ display: 'flex', gap: 1 }}>
-              <Button variant="contained" size="small" onClick={() => handleUpdate(task.id)}>
-                Save
-              </Button>
-              <Button size="small" onClick={cancelEdit}>
-                Cancel
-              </Button>
-            </Box>
-          </>
-        ) : (
-          <>
-            <Typography variant="subtitle1" fontWeight={600}>
-              {task.title}
-            </Typography>
-            {task.content && (
-              <Typography variant="body2" sx={{ mb: 1 }}>
-                {task.content}
-              </Typography>
-            )}
-            {task.assigned && (
-              <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                Assigned: {task.assigned.name}
-              </Typography>
-            )}
-            <Box sx={{ display: 'flex', gap: 1, mt: 1 }}>
-              <Select
-                value={task.status}
-                onChange={(e) => handleStatusChange(task.id, e.target.value)}
-                size="small"
-                sx={{ minWidth: 120 }}
-                data-testid="status-select"
-              >
-                <MenuItem value="todo">Todo</MenuItem>
-                <MenuItem value="in-progress">In Progress</MenuItem>
-                <MenuItem value="done">Done</MenuItem>
-              </Select>
-              <Button size="small" onClick={() => startEdit(task)}>
-                Edit
-              </Button>
-              <Button size="small" onClick={() => handleDelete(task.id)} color="secondary">
-                Delete
-              </Button>
-            </Box>
-          </>
-        )}
-      </ListItem>
-    </Paper>
+  const renderTask = (task, index) => (
+    <Draggable draggableId={String(task.id)} index={index} key={task.id}>
+      {(provided) => (
+        <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+          <Paper
+            elevation={2}
+            sx={{
+              p: 2,
+              mb: 2,
+              borderRadius: 2,
+              transition: '0.2s',
+              ':hover': { boxShadow: 4 },
+            }}
+          >
+            <ListItem disablePadding sx={{ flexDirection: 'column', alignItems: 'flex-start' }}>
+              {editingTaskId === task.id ? (
+                <>
+                  <TextField
+                    label="Title"
+                    value={editTitle}
+                    onChange={(e) => setEditTitle(e.target.value)}
+                    fullWidth
+                    size="small"
+                    sx={{ mb: 1 }}
+                  />
+                  <TextField
+                    value={editContent}
+                    onChange={(e) => setEditContent(e.target.value)}
+                    label="Content"
+                    fullWidth
+                    size="small"
+                    sx={{ mb: 1 }}
+                  />
+                  <Select
+                    value={editAssignedId}
+                    onChange={(e) => setEditAssignedId(e.target.value)}
+                    fullWidth
+                    size="small"
+                    sx={{ mb: 1 }}
+                    data-testid="edit-assign-select"
+                  >
+                    <MenuItem value="">Unassigned</MenuItem>
+                    {members.map((m) => (
+                      <MenuItem key={m.id} value={m.id}>
+                        {m.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  <Box sx={{ display: 'flex', gap: 1 }}>
+                    <Button variant="contained" size="small" onClick={() => handleUpdate(task.id)}>
+                      Save
+                    </Button>
+                    <Button size="small" onClick={cancelEdit}>
+                      Cancel
+                    </Button>
+                  </Box>
+                </>
+              ) : (
+                <>
+                  <Typography variant="subtitle1" fontWeight={600}>
+                    {task.title}
+                  </Typography>
+                  {task.content && (
+                    <Typography variant="body2" sx={{ mb: 1 }}>
+                      {task.content}
+                    </Typography>
+                  )}
+                  {task.assigned && (
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                      Assigned: {task.assigned.name}
+                    </Typography>
+                  )}
+                  <Box sx={{ display: 'flex', gap: 1, mt: 1 }}>
+                    <Select
+                      value={task.status}
+                      onChange={(e) => handleStatusChange(task.id, e.target.value)}
+                      size="small"
+                      sx={{ minWidth: 120 }}
+                      data-testid="status-select"
+                    >
+                      <MenuItem value="todo">Todo</MenuItem>
+                      <MenuItem value="in-progress">In Progress</MenuItem>
+                      <MenuItem value="done">Done</MenuItem>
+                    </Select>
+                    <Button size="small" onClick={() => startEdit(task)}>
+                      Edit
+                    </Button>
+                    <Button size="small" onClick={() => handleDelete(task.id)} color="secondary">
+                      Delete
+                    </Button>
+                  </Box>
+                </>
+              )}
+            </ListItem>
+          </Paper>
+        </div>
+      )}
+    </Draggable>
   );
 
   return (
@@ -262,20 +276,31 @@ function TaskPage() {
           {message}
         </Typography>
       )}
-      <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-start' }}>
-        {[
-          { key: 'todo', label: 'Todo' },
-          { key: 'in-progress', label: 'In Progress' },
-          { key: 'done', label: 'Done' },
-        ].map((col) => (
-          <Box key={col.key} sx={{ flex: 1 }}>
-            <Typography variant="h6" align="center" gutterBottom>
-              {col.label}
-            </Typography>
-            <List>{tasks.filter((t) => t.status === col.key).map((task) => renderTask(task))}</List>
-          </Box>
-        ))}
-      </Box>
+      <DragDropContext onDragEnd={handleDragEnd}>
+        <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-start' }}>
+          {[
+            { key: 'todo', label: 'Todo' },
+            { key: 'in-progress', label: 'In Progress' },
+            { key: 'done', label: 'Done' },
+          ].map((col) => (
+            <Box key={col.key} sx={{ flex: 1 }}>
+              <Typography variant="h6" align="center" gutterBottom>
+                {col.label}
+              </Typography>
+              <Droppable droppableId={col.key}>
+                {(provided) => (
+                  <List ref={provided.innerRef} {...provided.droppableProps}>
+                    {tasks
+                      .filter((t) => t.status === col.key)
+                      .map((task, index) => renderTask(task, index))}
+                    {provided.placeholder}
+                  </List>
+                )}
+              </Droppable>
+            </Box>
+          ))}
+        </Box>
+      </DragDropContext>
     </Container>
   );
 }
