@@ -1,4 +1,5 @@
 const prisma = require('../prisma/client');
+const { getIO } = require('../socket');
 
 exports.createTask = async (req, res) => {
   try {
@@ -24,6 +25,11 @@ exports.createTask = async (req, res) => {
         },
       },
     });
+
+    const io = getIO();
+    if (board.teamId) {
+      io.to(`team-${board.teamId}`).emit('task-created', task);
+    }
 
     res.status(201).json(task);
   } catch (err) {
