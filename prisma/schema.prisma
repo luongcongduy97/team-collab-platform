@@ -23,6 +23,7 @@ model User {
   teams     Team[] @relation("TeamMembers")
   messages  Message[]
   tasks     Task[]
+  notifications  Notification[] 
 }
 
 model Team {
@@ -59,6 +60,15 @@ model Message {
   userId   String
   team     Team @relation(fields: [teamId], references: [id])
   teamId   String
+  createdAt DateTime @default(now())
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  content   String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  read      Boolean  @default(false)
   createdAt DateTime @default(now())
 }
 

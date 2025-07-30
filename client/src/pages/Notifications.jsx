@@ -12,6 +12,14 @@ function Notifications() {
   const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
+    api
+      .get('/notifications')
+      .then((res) => {
+        const existing = res.data || [];
+        setNotifications(existing.map((n) => n.content));
+      })
+      .catch(() => {});
+
     const token = localStorage.getItem('token');
     if (!token) return;
     api.get('/teams/my').then((res) => {
