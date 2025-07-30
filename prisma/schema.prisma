@@ -23,6 +23,7 @@ model User {
   teams     Team[] @relation("TeamMembers")
   messages  Message[]
   tasks     Task[]
+  notifications  Notification[] 
 }
 
 model Team {
